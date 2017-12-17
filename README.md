@@ -96,6 +96,8 @@ Response:
 
 ## Private routes
 
+Private routes are not declared on the public API endpoint. A separate process is launched on the server and an SSH tunnel is mandatory to access those routes.
+
 ### GET /admin/pre-sale/review/:publicId
 
 This route is used by BlockFood to retrieve the data related to an application.
