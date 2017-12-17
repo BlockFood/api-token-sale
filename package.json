@@ -2,9 +2,9 @@
   "name": "blockfood-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/BlockFood/blockfood-api/issues"
   },
-  "homepage": "https://github.com/BlockFood/blockfood-api#readme"
+  "homepage": "https://github.com/BlockFood/blockfood-api#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
