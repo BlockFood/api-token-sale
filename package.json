@@ -1,0 +1,19 @@
+{
+  "name": "blockfood-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlockFood/blockfood-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BlockFood/blockfood-api/issues"
+  },
+  "homepage": "https://github.com/BlockFood/blockfood-api#readme"
+}
