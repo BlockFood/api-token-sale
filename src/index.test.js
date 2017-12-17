@@ -4,7 +4,7 @@ const supertest = require('supertest')
 
 const fs = require('fs')
 
-const { start, getApp } = require('./index')
+const { start, getPublicApp, getPrivateApp } = require('./index')
 
 describe('index', () => {
 
@@ -20,17 +20,10 @@ describe('index', () => {
         })
     })
 
-    describe('getApp', () => {
-        it('should return an express app', () => {
-            const app = getApp()
-
-            expect(app).not.to.be.null
-            expect(app.listen).not.to.be.null
-        })
-
+    describe('getPublicApp', () => {
         describe('GET /pre-sale/new', () => {
             it('should accept new applications', async () => {
-                const app = getApp()
+                const app = getPublicApp()
 
                 await supertest(app)
                     .get('/pre-sale/new?email=test@foo.bar')
@@ -40,7 +33,7 @@ describe('index', () => {
                 const handler = {
                     add: sinon.stub()
                 }
-                const app = getApp(handler)
+                const app = getPublicApp(handler)
 
                 await supertest(app)
                     .get('/pre-sale/new?email=test@foo.bar')
@@ -50,7 +43,7 @@ describe('index', () => {
             })
         })
 
-        describe('POST /pre-sale/edit/:publicId', () => {
+        describe('POST /pre-sale/edit/:privateId', () => {
             it('should call handlers.update with valid parameters', async() => {
                 const handler = {
                     update: sinon.stub()
@@ -58,7 +51,7 @@ describe('index', () => {
                 const expectedPreSaleApplication = {
                     name : 'what'
                 }
-                const app = getApp(handler)
+                const app = getPublicApp(handler)
 
                 await supertest(app)
                     .post('/pre-sale/edit/ID42')
@@ -77,7 +70,7 @@ describe('index', () => {
 
         })
 
-        describe('GET /pre-sale/review/:publicId', () => {
+        describe('GET /pre-sale/review/:privateId', () => {
             it('should return whatever handlers.get returns', async() => {
                 const handler = {
                     get: sinon.stub()
@@ -85,7 +78,7 @@ describe('index', () => {
                 const whatever = { whatevs : true}
                 handler.get.withArgs('ID42').resolves(whatever)
 
-                const app = getApp(handler)
+                const app = getPublicApp(handler)
 
                 const response = await supertest(app)
                     .get('/pre-sale/review/ID42')
@@ -95,5 +88,25 @@ describe('index', () => {
             })
         })
 
+    })
+
+    describe('getPrivateApp', () => {
+        describe('GET /admin/pre-sale/review/:publicId', () => {
+            it('should return whatever handlers.get returns', async() => {
+                const handler = {
+                    get: sinon.stub()
+                }
+                const whatever = { whatevs : true}
+                handler.get.withArgs('publicId').resolves(whatever)
+
+                const app = getPrivateApp(handler)
+
+                const response = await supertest(app)
+                    .get('/admin/pre-sale/review/publicId')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+        })
     })
 })
