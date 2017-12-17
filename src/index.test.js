@@ -50,7 +50,7 @@ describe('index', () => {
             })
         })
 
-        describe('POST /pre-sale/edit/:privateId', () => {
+        describe('POST /pre-sale/edit/:publicId', () => {
             it('should call handlers.update with valid parameters', async() => {
                 const handler = {
                     update: sinon.stub()
@@ -77,7 +77,7 @@ describe('index', () => {
 
         })
 
-        describe('GET /pre-sale/review/:privateId', () => {
+        describe('GET /pre-sale/review/:publicId', () => {
             it('should return whatever handlers.get returns', async() => {
                 const handler = {
                     get: sinon.stub()

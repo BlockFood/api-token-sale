@@ -13,7 +13,7 @@ const getApp = (handlers = {
         res.end()
     })
 
-    app.post('/pre-sale/edit/:privateId', (req, res) => {
+    app.post('/pre-sale/edit/:publicId', (req, res) => {
         const form = new multiparty.Form({ autoFiles: true })
 
         form.parse(req, (err, fields, files) => {
@@ -21,20 +21,20 @@ const getApp = (handlers = {
                 res.send(500)
                 return
             }
-            const privateId = req.params.privateId
+            const publicId = req.params.publicId
             const application = Object.keys(fields).reduce((application, key) => {
                 application[key] = fields[key][0]
                 return application
             }, {})
             const idCardPath = files['id_card'][0].path
 
-            handlers.update(privateId, application, idCardPath)
+            handlers.update(publicId, application, idCardPath)
             res.end()
         })
     })
 
-    app.get('/pre-sale/review/:privateId', async (req, res) => {
-        const application = await handlers.get(req.params.privateId)
+    app.get('/pre-sale/review/:publicId', async (req, res) => {
+        const application = await handlers.get(req.params.publicId)
         res.send(application)
     })
 
