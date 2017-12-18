@@ -1,7 +1,7 @@
-const uuidv4 = require('uuid/v4')
+const randomID = require('random-id')
 
 module.exports = {
-    generatePublicId: () => uuidv4(),
+    generatePublicId: () => randomID(30),
 
-    generatePrivateId: () => uuidv4(),
+    generatePrivateId: () => randomID(30),
 }
