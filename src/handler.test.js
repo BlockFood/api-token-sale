@@ -36,7 +36,18 @@ describe('handler', () => {
 
                 await add('foo@bar')
 
-                expect()
+                const dbFirstCall = db.add.getCall(0)
+                const [ newApplication ] = dbFirstCall.args
+                expect(newApplication).to.deep.equal({
+                    email: 'foo@bar',
+                    privateId,
+                    publicId
+                })
+
+                const emailSenderFirstCall = emailSender.sendFirstEmail.getCall(0)
+                const [ email, emailPrivateId ] = emailSenderFirstCall.args
+                expect(email).to.equal('foo@bar')
+                expect(emailPrivateId).to.equal(privateId)
             })
         })
         describe('update', () => {

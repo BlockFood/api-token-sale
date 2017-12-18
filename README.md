@@ -11,9 +11,10 @@ All applications done through [https://blockfood.io/pre-sale](https://blockfood.
   "publicId": String,
   "privateId": String,
   
+  "email": String,
   "firstName": String,
   "lastName": String,
-  "dateOfBirth": Date,
+  "dateOfBirth": String,
   "address": String,
   "postalCode": String,
   "city": String,
@@ -45,7 +46,7 @@ This route is the second step of the process. It must be called with the private
 
 - firstName: String
 - lastName: String
-- dateOfBirth: Date
+- dateOfBirth: String
 - address: String
 - postalCode: String
 - city: String
@@ -83,6 +84,7 @@ Response:
 200 - {
     "publicId" : "publicFoo",
     "privateId" : "foo",
+    "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
     "dateOfBirth" : "foo",
@@ -109,6 +111,7 @@ Response:
 200 - {
     "publicId" : "publicFoo",
     "privateId" : "foo",
+    "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
     "dateOfBirth" : "foo",
