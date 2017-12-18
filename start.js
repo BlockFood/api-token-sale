@@ -11,7 +11,8 @@ const emailSequence = require('./src/emailSequence')
 const emailSender = require('./src/emailSender')
 const storage = require('./src/storage')
 
-const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'))
+const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 'utf-8')
+
 const emailConfig = require('./email-config')
 
 const start = async() => {
@@ -33,7 +34,7 @@ const start = async() => {
                     emailSender(
                         nodemailer.createTransport(emailConfig),
                         template
-                    ),
+                    ).send,
                     (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
                 ),
                 storage(path.join(__dirname, 'store'))
