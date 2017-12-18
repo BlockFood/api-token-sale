@@ -5,7 +5,7 @@ const MongoInMemory = require('mongo-in-memory')
 
 const db = require('./db')
 
-const mongoServerInstance = new MongoInMemory(25625)
+const mongoServerInstance = new MongoInMemory(25624)
 
 const getDbUri = async () => new Promise((resolve, reject) => {
     mongoServerInstance.start((error, config) =>

@@ -5,6 +5,7 @@ const randomID = require('random-id')
 
 
 module.exports = (storagePath) => {
+    fs.ensureDirSync(storagePath)
 
     return {
         store: async (filePath) => {

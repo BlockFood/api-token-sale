@@ -11,12 +11,11 @@ describe('storage', () => {
 
     describe('store', () => {
         const testStoragePath = 'tmp/test/'
-        before(async () => {
-            await fs.ensureDirAsync(testStoragePath)
-        })
+
         after(async () => {
             await fs.removeAsync(testStoragePath)
         })
+
         it('should move the file to destination and return new path', async () => {
 
             const returnedPath = await storage(testStoragePath).store(path.join(__dirname, '..', 'test/fixture/logo.png'))

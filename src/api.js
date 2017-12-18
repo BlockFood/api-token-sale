@@ -1,7 +1,7 @@
 const express = require('express')
 const multiparty = require('multiparty')
 
-const getPublicApp = (handlers = {
+const getPublicApp = (handler = {
     add: () => {},
     update: () => {},
     get: async () => {},
@@ -9,7 +9,7 @@ const getPublicApp = (handlers = {
     const app = express()
 
     app.get('/pre-sale/new', (req, res) => {
-        handlers.add(req.query.email)
+        handler.add(req.query.email)
         res.end()
     })
 
@@ -25,33 +25,33 @@ const getPublicApp = (handlers = {
                 return
             }
 
-            const originalApplication = await handlers.get(privateId)
+            const originalApplication = await handler.get(privateId)
             const application = Object.keys(fields).reduce((application, key) => {
                 application[key] = fields[key][0]
                 return application
             }, {})
             const idCardPath = files['id_card'][0].path
 
-            handlers.update(privateId, originalApplication.email, application, idCardPath)
+            handler.update(privateId, originalApplication.email, application, idCardPath)
             res.end()
         })
     })
 
     app.get('/pre-sale/review/:privateId', async (req, res) => {
-        const application = await handlers.get(req.params.privateId)
+        const application = await handler.get(req.params.privateId)
         res.send(application)
     })
 
     return app
 }
 
-const getPrivateApp = (handlers = {
+const getPrivateApp = (handler = {
     get: async () => {},
 }) => {
     const app = express()
 
     app.get('/admin/pre-sale/review/:publicId', async (req, res) => {
-        const application = await handlers.get(req.params.publicId)
+        const application = await handler.get(req.params.publicId)
         res.send(application)
     })
     return app

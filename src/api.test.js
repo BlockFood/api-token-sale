@@ -4,7 +4,7 @@ const supertest = require('supertest')
 
 const fs = require('fs')
 
-const { start, getPublicApp, getPrivateApp } = require('./index')
+const { start, getPublicApp, getPrivateApp } = require('./api')
 
 describe('index', () => {
 
