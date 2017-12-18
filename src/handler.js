@@ -1,4 +1,4 @@
-const getPublicHandler = (db, idGenerator, emailSender, storage) => {
+const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
     const mandatoryFields = [
         'firstName',
@@ -41,7 +41,7 @@ const getPublicHandler = (db, idGenerator, emailSender, storage) => {
                 publicId
             })
 
-            await emailSender.sendFirstEmail(email, privateId)
+            await emailSequence.sendFirstEmail(email, privateId)
         },
         update: async (privateId, email, application, idCardPath) => {
             if (!validateApplicationForUpdate(application)) {
@@ -54,7 +54,7 @@ const getPublicHandler = (db, idGenerator, emailSender, storage) => {
 
             await db.update(privateId, updatedApplication)
 
-            await emailSender.sendSecondEmail(email, updatedApplication)
+            await emailSequence.sendSecondEmail(email, updatedApplication)
         },
         get: async (privateId) => {
             const applicationFromDB = await db.get(privateId)

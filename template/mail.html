@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>{{title}}</title>
+    <style>
+        body {
+            background: rgba(77, 30, 78, 0.15);
+        }
+
+        .container {
+            max-width:   720px;
+            background:  white;
+            border:      1px solid black;
+            padding:     20px;
+            margin:      20px auto;
+            font-size:   16px;
+            font-family: "Roboto", Arial, sans-serif;
+        }
+
+        .header {
+            border-bottom: 4px solid #4b3f80;
+            height:        83px;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            margin-left: 100px;
+        }
+
+        .row {
+            display:        flex;
+            position:       relative;
+            flex-direction: row
+        }
+
+        .col, .col-4, .col-6, .col-12 {
+            -ms-flex-preferred-size: 0;
+            flex-basis:              0;
+            -ms-flex-positive:       1;
+            flex-grow:               1;
+            max-width:               100%;
+            padding-left:            15px;
+            padding-right:           15px;
+            box-sizing:              border-box;
+        }
+
+        .col-4 {
+            -ms-flex: 0 0 33%;
+            flex:     1 0 auto;
+            width:    33%;
+        }
+
+        .col-6 {
+            -ms-flex: 0 0 50%;
+            flex:     1 0 auto;
+            width:    50%;
+        }
+
+        .col-12 {
+            -ms-flex: 0 0 100%;
+            flex:     1 0 auto;
+            width:    100%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .signature {
+            margin-top: 30px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size:  75%;
+            color:      rgba(0, 0, 0, 0.59);
+        }
+
+        .unsubscribe {
+            margin-top: 20px;
+            font-size:  75%;
+
+        }
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class='container'>
+    <div class='row header'>
+        <img alt='BlockFood' width='117' height='117'
+             style='display:block'
+             title='BlockFood'
+             src='https://blockfood.io/logo.png'>
+    </div>
+
+    <div class='row'>
+        <div class='col'>
+            <h1>{{{ title }}}</h1>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col'>
+            {{{ content }}}
+        </div>
+    </div>
+
+    {{#signature}}
+    <div class='row signature right'>
+        <div class='col-12'>
+            <p>
+                {{{ . }}}
+            </p>
+        </div>
+    </div>
+    {{/signature}}
+
+    <div class='row footer'>
+        <div class='col-6 left '>
+            © 2017 BlockFood - Open Sharing Economy foundation
+        </div>
+        <div class='col-6 right'>
+            Give the sharing economy back to the people
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
