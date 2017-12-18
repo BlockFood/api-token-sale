@@ -44,12 +44,14 @@ describe('index', () => {
         })
 
         describe('POST /pre-sale/edit/:privateId', () => {
-            it('should call handlers.update with valid parameters', async() => {
+            it('should call handlers.update with valid parameters', async () => {
                 const handler = {
+                    get: sinon.stub(),
                     update: sinon.stub()
                 }
+                handler.get.withArgs('ID42').resolves({ email: 'foo@bar' })
                 const expectedPreSaleApplication = {
-                    name : 'what'
+                    name: 'what'
                 }
                 const app = getPublicApp(handler)
 
@@ -59,10 +61,11 @@ describe('index', () => {
                     .attach('id_card', 'test/fixture/logo.png')
                     .expect(200)
 
-                const [ firstCall ] = handler.update.getCalls()
+                const [firstCall] = handler.update.getCalls()
 
-                const [ id, application, idCardPath ] = firstCall.args
+                const [id, email, application, idCardPath] = firstCall.args
                 expect(id).to.equal('ID42')
+                expect(email).to.equal('foo@bar')
                 expect(application).to.deep.equal(expectedPreSaleApplication)
 
                 assert(fs.existsSync(idCardPath))
@@ -71,11 +74,11 @@ describe('index', () => {
         })
 
         describe('GET /pre-sale/review/:privateId', () => {
-            it('should return whatever handlers.get returns', async() => {
+            it('should return whatever handlers.get returns', async () => {
                 const handler = {
                     get: sinon.stub()
                 }
-                const whatever = { whatevs : true}
+                const whatever = { whatevs: true }
                 handler.get.withArgs('ID42').resolves(whatever)
 
                 const app = getPublicApp(handler)
@@ -92,11 +95,11 @@ describe('index', () => {
 
     describe('getPrivateApp', () => {
         describe('GET /admin/pre-sale/review/:publicId', () => {
-            it('should return whatever handlers.get returns', async() => {
+            it('should return whatever handlers.get returns', async () => {
                 const handler = {
                     get: sinon.stub()
                 }
-                const whatever = { whatevs : true}
+                const whatever = { whatevs: true }
                 handler.get.withArgs('publicId').resolves(whatever)
 
                 const app = getPrivateApp(handler)

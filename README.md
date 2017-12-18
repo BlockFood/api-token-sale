@@ -1,4 +1,4 @@
-# BlockFood-API
+# api-token-sale
 
 This API is meant for the pre-sale and token sale process. Its goal is to securely store applications for the whitelisting process.
 

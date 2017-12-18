@@ -1,4 +1,34 @@
-const getPublicHandler = (db, idGenerator, emailSender) => {
+const getPublicHandler = (db, idGenerator, emailSender, storage) => {
+
+    const mandatoryFields = [
+        'firstName',
+        'lastName',
+        'dateOfBirth',
+        'address',
+        'postalCode',
+        'city',
+        'country',
+        'nationality',
+    ]
+
+    const exportedFields = [
+        'publicId',
+        'privateId',
+        'email',
+        'firstName',
+        'lastName',
+        'dateOfBirth',
+        'address',
+        'postalCode',
+        'city',
+        'country',
+        'nationality',
+    ]
+
+    const validateApplicationForUpdate = (application) =>
+        mandatoryFields.reduce((isValid, field) => {
+            return isValid && application[field]
+        }, true)
 
     return {
         add: async (email) => {
@@ -13,8 +43,27 @@ const getPublicHandler = (db, idGenerator, emailSender) => {
 
             await emailSender.sendFirstEmail(email, privateId)
         },
-        update: async () => {},
-        get: async () => {},
+        update: async (privateId, email, application, idCardPath) => {
+            if (!validateApplicationForUpdate(application)) {
+                throw new Error('Invalid application')
+            }
+
+            const updatedApplication = Object.assign({}, application)
+
+            updatedApplication.idCardPath = await storage.store(idCardPath)
+
+            await db.update(privateId, updatedApplication)
+
+            await emailSender.sendSecondEmail(email, updatedApplication)
+        },
+        get: async (privateId) => {
+            const applicationFromDB = await db.get(privateId)
+
+            return exportedFields.reduce((application, field) => {
+                application[field] = applicationFromDB[field]
+                return application
+            }, {})
+        },
     }
 }
 
