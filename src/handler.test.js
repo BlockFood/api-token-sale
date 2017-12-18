@@ -22,6 +22,7 @@ describe('handler', () => {
         add: sinon.stub(),
         update: sinon.stub(),
         get: sinon.stub(),
+        getWithPublicId: sinon.stub(),
     })
 
     const getIdGenerator = () => ({
@@ -88,24 +89,24 @@ describe('handler', () => {
                 const storageHandler = getStorageHandler()
                 storageHandler.store.resolves('foo/bar.png')
 
-                const expectedApplication = Object.assign({idCardPath: 'foo/bar.png'}, validApplication)
+                const expectedApplication = Object.assign({ idCardPath: 'foo/bar.png' }, validApplication)
 
                 const { update } = getPublicHandler(db, getIdGenerator(), emailSender, storageHandler)
 
                 await update(expectedPrivateId, 'foo@bar', validApplication, 'temp/path/to/image.png')
 
                 const dbFirstCall = db.update.getCall(0)
-                const [ privateId, application ] = dbFirstCall.args
+                const [privateId, application] = dbFirstCall.args
                 expect(privateId).to.equal(expectedPrivateId)
                 expect(application).to.deep.equal(expectedApplication)
 
                 const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
-                const [email, application2 ] = emailSenderFirstCall.args
+                const [email, application2] = emailSenderFirstCall.args
                 expect(email).to.equal('foo@bar')
                 expect(application2).to.deep.equal(expectedApplication)
             })
 
-            it('should throw if invalid application', async() => {
+            it('should throw if invalid application', async () => {
                 const invalidApplication = {
                     firstName: 'foo',
                     // missing fields
@@ -161,7 +162,17 @@ describe('handler', () => {
 
     describe('getPrivateHandler', () => {
         describe('get', () => {
-            
+            it('should returned an unfiltered version from the db', async () => {
+                const db = getDb()
+                const whatever = { whatevs: true }
+                db.getWithPublicId.withArgs(expectedPublicId).resolves(whatever)
+
+                const { get } = getPrivateHandler(db)
+
+                const returnedApplication = await get(expectedPublicId)
+
+                expect(returnedApplication).to.deep.equal(whatever)
+            })
         })
     })
 })

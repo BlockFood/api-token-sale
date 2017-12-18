@@ -69,7 +69,9 @@ const getPublicHandler = (db, idGenerator, emailSender, storage) => {
 
 const getPrivateHandler = (db) => {
     return {
-        get: async () => {},
+        get: async (publicId) => {
+            return db.getWithPublicId(publicId)
+        },
     }
 }
 
