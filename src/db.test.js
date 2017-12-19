@@ -59,6 +59,14 @@ describe('db', () => {
         })
     })
 
+    describe('get', () => {
+        it('should return null if no value found', async() => {
+            const applicationNotFound = await dbHandler.get('not-existing-id')
+
+            expect(applicationNotFound).to.be.null
+        })
+    })
+
     describe('getWithPublicId', () => {
         it('returns the application with the given publicId', async() => {
             await dbHandler.add({ email: 'foo@bar', privateId: 'privateId', publicId: 'publicId' })

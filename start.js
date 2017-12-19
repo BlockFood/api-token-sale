@@ -17,15 +17,6 @@ const emailConfig = require('./email-config')
 
 const start = async() => {
     api.start(
-        api.getPrivateApp(
-            handler.getPrivateHandler(
-                await db('mongodb://127.0.0.1:27017/token-sale')
-            )
-        ),
-        25624 // block
-    )
-
-    api.start(
         api.getPublicApp(
             handler.getPublicHandler(
                 await db('mongodb://127.0.0.1:27017/token-sale'),

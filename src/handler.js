@@ -1,3 +1,5 @@
+const emailValidator = require('email-validator')
+
 const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
     const mandatoryFields = [
@@ -30,8 +32,21 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             return isValid && application[field]
         }, true)
 
+    const getMissingFieldsForUpdate = (application) =>
+        mandatoryFields.reduce((missingFields, field) => {
+            if (!application[field]) {
+                missingFields.push(field)
+            }
+            return missingFields
+        }, [])
+
     return {
+        validateApplicationForUpdate,
+        getMissingFieldsForUpdate,
         add: async (email) => {
+            if (!emailValidator.validate(email)) {
+                throw new Error('invalid email')
+            }
             const privateId = idGenerator.generatePrivateId()
             const publicId = idGenerator.generatePublicId()
 
@@ -45,7 +60,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         },
         update: async (privateId, email, application, idCardPath) => {
             if (!validateApplicationForUpdate(application)) {
-                throw new Error('Invalid application')
+                throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
 
             const updatedApplication = Object.assign({}, application)
@@ -58,6 +73,10 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         },
         get: async (privateId) => {
             const applicationFromDB = await db.get(privateId)
+
+            if (!applicationFromDB) {
+                throw new Error('application not found')
+            }
 
             return exportedFields.reduce((application, field) => {
                 application[field] = applicationFromDB[field]

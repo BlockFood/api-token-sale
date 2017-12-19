@@ -3,12 +3,15 @@ const sinon = require('sinon')
 
 const { getPublicHandler, getPrivateHandler } = require('./handler')
 
-const expectFailure = async (promise, errorMessage) => {
+const expectFailure = async (promise, errorMessage, expectedError) => {
     let hasFailed
     try {
         await promise
         hasFailed = false
     } catch (e) {
+        if (expectedError) {
+            expect(e.toString()).to.equal(expectedError)
+        }
         hasFailed = true
     }
     assert(hasFailed, errorMessage)
@@ -52,20 +55,47 @@ describe('handler', () => {
 
                 const { add } = getPublicHandler(db, idGenerator, emailSender, getStorageHandler())
 
-                await add('foo@bar')
+                await add('foo@bar.baz')
 
                 const dbFirstCall = db.add.getCall(0)
                 const [newApplication] = dbFirstCall.args
                 expect(newApplication).to.deep.equal({
-                    email: 'foo@bar',
+                    email: 'foo@bar.baz',
                     privateId: expectedPrivateId,
                     publicId: expectedPublicId
                 })
 
                 const emailSenderFirstCall = emailSender.sendFirstEmail.getCall(0)
                 const [email, privateId] = emailSenderFirstCall.args
-                expect(email).to.equal('foo@bar')
+                expect(email).to.equal('foo@bar.baz')
                 expect(privateId).to.equal(expectedPrivateId)
+            })
+            it('should throw if email is invalid', async () => {
+                const { add } = getPublicHandler(getDb(),getIdGenerator(), getEmailSender(), getStorageHandler())
+
+                await expectFailure(
+                    add('invalid-email'),
+                    'Invalid email did not throw error',
+                    'Error: invalid email'
+                )
+            })
+        })
+        describe('getMissingFieldsForUpdate', () => {
+            it('should return the list of missing fields', () => {
+                const { getMissingFieldsForUpdate } = getPublicHandler()
+
+                const missingFields = getMissingFieldsForUpdate({})
+                expect(missingFields).to.deep.equal([
+                    'firstName',
+                    'lastName',
+                    'dateOfBirth',
+                    'address',
+                    'postalCode',
+                    'city',
+                    'country',
+                    'nationality',
+                ])
+
             })
         })
         describe('update', () => {
@@ -116,7 +146,8 @@ describe('handler', () => {
 
                 await expectFailure(
                     update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
-                    'update did not fail as expected'
+                    'update did not fail as expected',
+                    'Error: missing fields: lastName, dateOfBirth, address, postalCode, city, country, nationality'
                 )
             })
         })
@@ -156,6 +187,18 @@ describe('handler', () => {
                     country: 'foo',
                     nationality: 'foo',
                 })
+            })
+            it('should throw if application not found', async() => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves(null)
+
+                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+
+                await expectFailure(
+                    get(expectedPrivateId),
+                    'Get did not fail while returning non existing application',
+                    'Error: application not found'
+                )
             })
         })
     })

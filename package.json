@@ -5,6 +5,7 @@
   "main": "start.js",
   "scripts": {
     "start": "node start.js",
+    "start:private": "node start-private-api.js",
     "test": "mocha src/**/*.test.js --colors"
   },
   "repository": {
@@ -25,6 +26,7 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
+    "email-validator": "^1.1.1",
     "escape-html": "^1.0.3",
     "express": "^4.16.2",
     "fs-extra-promise": "^1.0.1",
