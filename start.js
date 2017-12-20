@@ -15,7 +15,7 @@ const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 
 
 const emailConfig = require('./email-config')
 
-const start = async() => {
+const start = async () => {
     api.start(
         api.getPublicApp(
             handler.getPublicHandler(
@@ -29,7 +29,8 @@ const start = async() => {
                     (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
                 ),
                 storage(path.join(__dirname, 'store'))
-            )
+            ),
+            process.argv[2] === '--debug'
         ),
         3663 // food
     )
