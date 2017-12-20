@@ -144,3 +144,17 @@ npm install
 ```bash
 npm test
 ```
+
+### Launch
+
+1. Make sure you have a running instance of mongoDB accessible at mongodb://127.0.0.1:27017/
+
+2. In dev environment, run:
+```bash
+npm start --debug
+```
+
+3. In production environment, run:
+```bash
+npm start
+```
