@@ -151,7 +151,7 @@ npm test
 
 2. In dev environment, run:
 ```bash
-npm start --debug
+npm start -- --debug
 ```
 
 3. In production environment, run:
