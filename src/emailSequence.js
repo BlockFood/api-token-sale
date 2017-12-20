@@ -7,7 +7,7 @@ module.exports = (send, getNextStepUrl) => {
             await send(email, {
                 title: 'BlockFood - Next step for pre-sale',
                 content: `<p>Thank you very much for applying to the pre-sale process.</p>
-                    <p>In order to finalize your application, the following form must be completed:</p>
+                    <p>In order to finalize your application, you must complete the following form:</p>
                     <p class='call-to-action-container'><a href='${getNextStepUrl(privateId)}' class='call-to-action'>Next step</a></p>`,
                 signature: 'Best regards,<br><br>BlockFood team'
             })

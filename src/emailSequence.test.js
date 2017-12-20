@@ -21,7 +21,7 @@ describe('emailSequence', () => {
             expect(sent.title).to.equal('BlockFood - Next step for pre-sale')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
             expect(sent.content).to.equal(`<p>Thank you very much for applying to the pre-sale process.</p>
-                    <p>In order to finalize your application, the following form must be completed:</p>
+                    <p>In order to finalize your application, you must complete the following form:</p>
                     <p class='call-to-action-container'><a href='url/to/pre-sale-form/privateId' class='call-to-action'>Next step</a></p>`)
         })
     })
