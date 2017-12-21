@@ -25,9 +25,11 @@ describe('api', () => {
             it('should accept new applications', async () => {
                 const app = getPublicApp()
 
-                await supertest(app)
+                const response = await supertest(app)
                     .get('/pre-sale/new?email=test@foo.bar')
                     .expect(200)
+
+                expect(response.body).to.deep.equal({ok : true})
             })
             it('should call handlers.add', async () => {
                 const handler = {
@@ -75,7 +77,7 @@ describe('api', () => {
                 }
                 const app = getPublicApp(handler)
 
-                await supertest(app)
+                const response = await supertest(app)
                     .post('/pre-sale/edit/ID42')
                     .field('firstName', 'what')
                     .field('lastName', 'what')
@@ -96,6 +98,8 @@ describe('api', () => {
                 expect(application).to.deep.equal(expectedPreSaleApplication)
 
                 assert(fs.existsSync(idCardPath))
+
+                expect(response.body).to.deep.equal({ok : true})
             })
 
             it('should throw if handler throws', async () => {
@@ -150,6 +154,8 @@ describe('api', () => {
                     .expect(200)
 
                 assert(handler.lock.calledWith('ID42'))
+
+                expect(response.body).to.deep.equal({ok : true})
             })
             it('should throw if handler throws', async() => {
                 const handler = {

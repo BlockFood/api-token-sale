@@ -23,7 +23,7 @@ const getPublicApp = (handler = {
 
         try {
             await handler.add(email)
-            res.end()
+            res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
         }
@@ -48,7 +48,7 @@ const getPublicApp = (handler = {
                 }, {})
                 const idCardPath = files['id_card'][0].path
                 await handler.update(privateId, originalApplication.email, application, idCardPath)
-                res.end()
+                res.send({ ok: true })
             } catch (e) {
                 res.status(500).send({ error: e.toString() })
             }
@@ -60,7 +60,7 @@ const getPublicApp = (handler = {
 
         try {
             await handler.lock(privateId)
-            res.end()
+            res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
         }
