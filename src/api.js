@@ -36,7 +36,7 @@ const getPublicApp = (handler = {
 
         form.parse(req, async (err, fields, files) => {
             if (err) {
-                console.log(err)
+                console.log('Unexpected error', err)
                 res.send(500)
                 return
             }
@@ -53,6 +53,17 @@ const getPublicApp = (handler = {
                 res.status(500).send({ error: e.toString() })
             }
         })
+    })
+
+    app.get('/pre-sale/lock/:privateId', async (req, res) => {
+        const privateId = req.params.privateId
+
+        try {
+            await handler.lock(privateId)
+            res.end()
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
     })
 
     app.get('/pre-sale/review/:privateId', async (req, res) => {

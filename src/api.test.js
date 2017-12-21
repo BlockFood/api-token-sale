@@ -135,7 +135,36 @@ describe('api', () => {
 
                 expect(response.body.error).to.equal('Error: cannot find application')
             })
+        })
 
+        describe('GET /pre-sale/lock/:privateId', () => {
+            it('should call handler.lock', async () => {
+                const handler = {
+                    lock: sinon.stub()
+                }
+
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .get('/pre-sale/lock/ID42')
+                    .expect(200)
+
+                assert(handler.lock.calledWith('ID42'))
+            })
+            it('should throw if handler throws', async() => {
+                const handler = {
+                    lock: sinon.stub(),
+                }
+                handler.lock.rejects(new Error('application not found'))
+
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .get('/pre-sale/lock/ID42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: application not found')
+            })
         })
 
         describe('GET /pre-sale/review/:privateId', () => {

@@ -71,7 +71,7 @@ describe('handler', () => {
                 expect(privateId).to.equal(expectedPrivateId)
             })
             it('should throw if email is invalid', async () => {
-                const { add } = getPublicHandler(getDb(),getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { add } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender(), getStorageHandler())
 
                 await expectFailure(
                     add('invalid-email'),
@@ -156,6 +156,20 @@ describe('handler', () => {
                     'Error: missing fields: lastName, birthYear, birthMonth, birthDay, addressLine1, postalCode, city, country, nationality'
                 )
             })
+            it('should throw if application is locked', async () => {
+                const invalidApplication = {
+                    isLocked: 'true',
+                    // missing fields
+                }
+
+                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender(), getStorageHandler())
+
+                await expectFailure(
+                    update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
+                    'Get did not fail while returning locked application',
+                    'Error: application is locked'
+                )
+            })
         })
         describe('get', () => {
             it('should return a cleaned version from the db', async () => {
@@ -177,6 +191,7 @@ describe('handler', () => {
                     country: 'foo',
                     nationality: 'foo',
                     idCardPath: 'foo/bar.png',
+                    isLocked: true,
                     createdAt: new Date()
                 })
 
@@ -200,9 +215,10 @@ describe('handler', () => {
                     state: 'foo',
                     country: 'foo',
                     nationality: 'foo',
+                    isLocked: true,
                 })
             })
-            it('should throw if application not found', async() => {
+            it('should throw if application not found', async () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
 
@@ -210,6 +226,38 @@ describe('handler', () => {
 
                 await expectFailure(
                     get(expectedPrivateId),
+                    'Get did not fail while returning non existing application',
+                    'Error: application not found'
+                )
+            })
+        })
+
+        describe('lock', () => {
+            it('should lock the application', async () => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves({
+                    privateId: expectedPrivateId
+                })
+                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+
+                await lock(expectedPrivateId)
+
+                const updateFirstCall = db.update.getCall(0)
+                const [privateId, application] = updateFirstCall.args
+                expect(privateId).to.equal(expectedPrivateId)
+                expect(application).to.deep.equal({
+                    privateId: expectedPrivateId,
+                    isLocked: true
+                })
+            })
+            it('should throw if application not found', async () => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves(null)
+
+                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+
+                await expectFailure(
+                    lock(expectedPrivateId),
                     'Get did not fail while returning non existing application',
                     'Error: application not found'
                 )

@@ -36,6 +36,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'postalCode',
         'country',
         'nationality',
+        'isLocked'
     ]
 
     const validateApplicationForUpdate = (application) =>
@@ -70,6 +71,10 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             await emailSequence.sendFirstEmail(email, privateId)
         },
         update: async (privateId, email, application, idCardPath) => {
+            if (application.isLocked) {
+                throw new Error('application is locked')
+            }
+
             if (!validateApplicationForUpdate(application)) {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
@@ -94,6 +99,18 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 return application
             }, {})
         },
+        lock: async (privateId) => {
+            const applicationFromDB = await db.get(privateId)
+
+            if (!applicationFromDB) {
+                throw new Error('application not found')
+            }
+
+            const lockedApplication = Object.assign({}, applicationFromDB)
+            lockedApplication.isLocked = true
+
+            await db.update(privateId, lockedApplication)
+        }
     }
 }
 

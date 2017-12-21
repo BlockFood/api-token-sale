@@ -171,10 +171,18 @@ npm test
 
 2. In dev environment, run:
 ```bash
+# public API
 npm start -- --debug
+
+# private API
+npm run start:private
 ```
 
 3. In production environment, run:
 ```bash
+# public API
 npm start
+
+# private API
+npm run start:private
 ```
