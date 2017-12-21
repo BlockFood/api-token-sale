@@ -84,8 +84,6 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             updatedApplication.idCardPath = await storage.store(idCardPath)
 
             await db.update(privateId, updatedApplication)
-
-            await emailSequence.sendSecondEmail(email, updatedApplication)
         },
         get: async (privateId) => {
             const applicationFromDB = await db.get(privateId)
@@ -110,6 +108,8 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             lockedApplication.isLocked = true
 
             await db.update(privateId, lockedApplication)
+
+            await emailSequence.sendSecondEmail(lockedApplication.email, lockedApplication)
         }
     }
 }

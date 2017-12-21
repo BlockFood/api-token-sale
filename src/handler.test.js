@@ -116,18 +116,17 @@ describe('handler', () => {
                 nationality: 'foo',
             })
 
-            it('should update the application, send an email and move the image', async () => {
+            it('should update the application and move the image', async () => {
                 const db = getDb()
                 db.update.resolves()
                 const validApplication = getValidApplication()
-                const emailSender = getEmailSender()
-                emailSender.sendSecondEmail.resolves()
+
                 const storageHandler = getStorageHandler()
                 storageHandler.store.resolves('foo/bar.png')
 
                 const expectedApplication = Object.assign({ idCardPath: 'foo/bar.png' }, validApplication)
 
-                const { update } = getPublicHandler(db, getIdGenerator(), emailSender, storageHandler)
+                const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender(), storageHandler)
 
                 await update(expectedPrivateId, 'foo@bar', validApplication, 'temp/path/to/image.png')
 
@@ -135,11 +134,6 @@ describe('handler', () => {
                 const [privateId, application] = dbFirstCall.args
                 expect(privateId).to.equal(expectedPrivateId)
                 expect(application).to.deep.equal(expectedApplication)
-
-                const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
-                const [email, application2] = emailSenderFirstCall.args
-                expect(email).to.equal('foo@bar')
-                expect(application2).to.deep.equal(expectedApplication)
             })
 
             it('should throw if invalid application', async () => {
@@ -249,6 +243,31 @@ describe('handler', () => {
                     privateId: expectedPrivateId,
                     isLocked: true
                 })
+            })
+
+            it('should send second email', async() => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSecondEmail.resolves()
+
+                const { lock } = getPublicHandler(db, getIdGenerator(), emailSender, getStorageHandler())
+
+                await lock(expectedPrivateId)
+
+
+                const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
+                const [email, application] = emailSenderFirstCall.args
+                expect(email).to.equal('foo@bar')
+                expect(application).to.deep.equal({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    isLocked: true
+                })
+
             })
             it('should throw if application not found', async () => {
                 const db = getDb()
