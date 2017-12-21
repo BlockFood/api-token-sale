@@ -88,8 +88,10 @@ describe('handler', () => {
                 expect(missingFields).to.deep.equal([
                     'firstName',
                     'lastName',
-                    'dateOfBirth',
-                    'address',
+                    'birthYear',
+                    'birthMonth',
+                    'birthDay',
+                    'addressLine1',
                     'postalCode',
                     'city',
                     'country',
@@ -102,10 +104,14 @@ describe('handler', () => {
             const getValidApplication = () => ({
                 firstName: 'foo',
                 lastName: 'foo',
-                dateOfBirth: 'foo',
-                address: 'foo',
-                postalCode: 'foo',
+                birthYear: 'foo',
+                birthMonth: 'foo',
+                birthDay: 'foo',
+                addressLine1: 'foo',
+                addressLine2: 'foo',
                 city: 'foo',
+                state: 'foo',
+                postalCode: 'foo',
                 country: 'foo',
                 nationality: 'foo',
             })
@@ -147,7 +153,7 @@ describe('handler', () => {
                 await expectFailure(
                     update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
                     'update did not fail as expected',
-                    'Error: missing fields: lastName, dateOfBirth, address, postalCode, city, country, nationality'
+                    'Error: missing fields: lastName, birthYear, birthMonth, birthDay, addressLine1, postalCode, city, country, nationality'
                 )
             })
         })
@@ -160,10 +166,14 @@ describe('handler', () => {
                     email: 'foo@bar',
                     firstName: 'foo',
                     lastName: 'foo',
-                    dateOfBirth: 'foo',
-                    address: 'foo',
+                    birthYear: 'foo',
+                    birthMonth: 'foo',
+                    birthDay: 'foo',
+                    addressLine1: 'foo',
+                    addressLine2: 'foo',
                     postalCode: 'foo',
                     city: 'foo',
+                    state: 'foo',
                     country: 'foo',
                     nationality: 'foo',
                     idCardPath: 'foo/bar.png',
@@ -180,10 +190,14 @@ describe('handler', () => {
                     email: 'foo@bar',
                     firstName: 'foo',
                     lastName: 'foo',
-                    dateOfBirth: 'foo',
-                    address: 'foo',
+                    birthYear: 'foo',
+                    birthMonth: 'foo',
+                    birthDay: 'foo',
+                    addressLine1: 'foo',
+                    addressLine2: 'foo',
                     postalCode: 'foo',
                     city: 'foo',
+                    state: 'foo',
                     country: 'foo',
                     nationality: 'foo',
                 })

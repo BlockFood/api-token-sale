@@ -5,12 +5,19 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
     const mandatoryFields = [
         'firstName',
         'lastName',
-        'dateOfBirth',
-        'address',
+        'birthYear',
+        'birthMonth',
+        'birthDay',
+        'addressLine1',
         'postalCode',
         'city',
         'country',
         'nationality',
+    ]
+
+    const optionalFields = [
+        'addressLine2',
+        'state',
     ]
 
     const exportedFields = [
@@ -19,10 +26,14 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'email',
         'firstName',
         'lastName',
-        'dateOfBirth',
-        'address',
-        'postalCode',
+        'birthYear',
+        'birthMonth',
+        'birthDay',
+        'addressLine1',
+        'addressLine2',
         'city',
+        'state',
+        'postalCode',
         'country',
         'nationality',
     ]

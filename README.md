@@ -14,10 +14,14 @@ All applications done through [https://blockfood.io/pre-sale](https://blockfood.
   "email": String,
   "firstName": String,
   "lastName": String,
-  "dateOfBirth": String,
-  "address": String,
+  "birthYear": String,
+  "birthMonth": String,
+  "birthDay": String,
+  "addressLine1": String,
+  "addressLine2": String,
   "postalCode": String,
   "city": String,
+  "state": String,
   "country": String,
   "nationality": String,
   
@@ -46,10 +50,14 @@ This route is the second step of the process. It must be called with the private
 
 - firstName: String
 - lastName: String
-- dateOfBirth: String
-- address: String
+- birthYear: String
+- birthMonth: String
+- birthDay: String
+- addressLine1: String
+- addressLine2: String
 - postalCode: String
 - city: String
+- state: String
 - country: String
 - nationality: String
 
@@ -62,10 +70,14 @@ Example:
 POST /pre-sale/edit/foo
     .field('firstName', 'foo')
     .field('lastName', 'foo')
-    .field('dateOfBirth', 'foo')
-    .field('address', 'foo')
+    .field('birthYear', 'foo')
+    .field('birthMonth', 'foo')
+    .field('birthDay', 'foo')
+    .field('addressLine1', 'foo')
+    .field('addressLine2', 'foo')
     .field('postalCode', 'foo')
     .field('city', 'foo')
+    .field('state', 'foo')
     .field('country', 'foo')
     .field('nationality', 'foo')
     .attach('id_card', 'foo/bar.png')
@@ -87,10 +99,14 @@ Response:
     "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
-    "dateOfBirth" : "foo",
-    "address" : "foo",
-    "postalCode" : "foo",
+    "birthYear" : "foo",
+    "birthMonth" : "foo",
+    "birthDay" : "foo",
+    "addressLine1" : "foo",
+    "addressLine2" : "foo",
     "city" : "foo",
+    "state" : "foo",
+    "postalCode" : "foo",
     "country" : "foo",
     "nationality" : "foo"
 }
@@ -114,10 +130,14 @@ Response:
     "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
-    "dateOfBirth" : "foo",
-    "address" : "foo",
-    "postalCode" : "foo",
+    "birthYear" : "foo",
+    "birthMonth" : "foo",
+    "birthDay" : "foo",
+    "addressLine1" : "foo",
+    "addressLine2" : "foo",
     "city" : "foo",
+    "state" : "foo",
+    "postalCode" : "foo",
     "country" : "foo",
     "nationality" : "foo",
     
