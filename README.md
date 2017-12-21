@@ -85,6 +85,14 @@ POST /pre-sale/edit/foo
 
 Response: ```200 - OK```
 
+### GET /pre-sale/lock/:privateId
+
+This route locks the application and is mandatory before calling the pre-sale smart contract.
+
+Example: ```GET /pre-sale/lock/foo```
+
+Response: ```200 - OK```
+
 ### GET /pre-sale/review/:privateId
 
 This route returns the data stored for the corresponding applicant.
