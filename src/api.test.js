@@ -102,6 +102,28 @@ describe('api', () => {
                 expect(response.body).to.deep.equal({ok : true})
             })
 
+            it('shoud throw if no attached id_card', async() => {
+                const app = getPublicApp()
+
+                const response = await supertest(app)
+                    .post('/pre-sale/edit/ID42')
+                    .field('postalCode', 'what')
+                    .expect(500)
+
+                expect(response.body).to.deep.equal({error : 'Error: missing id_card attachment'})
+            })
+
+            it('shoud throw if no attached id_card', async() => {
+                const app = getPublicApp()
+
+                const response = await supertest(app)
+                    .post('/pre-sale/edit/ID42')
+                    .attach('id_card', 'test/fixture/empty.png')
+                    .expect(500)
+
+                expect(response.body).to.deep.equal({error : 'Error: empty id_card attachment'})
+            })
+
             it('should throw if handler throws', async () => {
                 const handler = {
                     get: sinon.stub(),

@@ -40,6 +40,15 @@ const getPublicApp = (handler = {
                 res.send(500)
                 return
             }
+            if (!files['id_card']) {
+                res.status(500).send({ error: new Error('missing id_card attachment').toString() })
+                return
+            }
+            if (files['id_card'][0].size === 0) {
+                res.status(500).send({ error: new Error('empty id_card attachment').toString() })
+                return
+            }
+
             try {
                 const originalApplication = await handler.get(privateId)
                 const application = Object.keys(fields).reduce((application, key) => {
