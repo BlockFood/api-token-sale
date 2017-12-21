@@ -15,6 +15,8 @@ const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 
 
 const emailConfig = require('./email-config')
 
+const isDebug = process.argv[2] === '--debug'
+
 const start = async () => {
     api.start(
         api.getPublicApp(
@@ -26,7 +28,9 @@ const start = async () => {
                         nodemailer.createTransport(emailConfig),
                         template
                     ).send,
-                    (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
+                    isDebug ?
+                        (privateId) => `http://localhost:8080/blockfood.io/pre-sale#privateId=${privateId}` :
+                        (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
                 ),
                 storage(path.join(__dirname, 'store'))
             ),
