@@ -36,9 +36,6 @@ describe('handler', () => {
         sendFirstEmail: sinon.stub(),
         sendSecondEmail: sinon.stub(),
     })
-    const getStorageHandler = () => ({
-        store: sinon.stub()
-    })
 
     describe('getPublicHandler', () => {
         describe('add', () => {
@@ -53,7 +50,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendFirstEmail.resolves()
 
-                const { add } = getPublicHandler(db, idGenerator, emailSender, getStorageHandler())
+                const { add } = getPublicHandler(db, idGenerator, emailSender)
 
                 await add('foo@bar.baz')
 
@@ -71,7 +68,7 @@ describe('handler', () => {
                 expect(privateId).to.equal(expectedPrivateId)
             })
             it('should throw if email is invalid', async () => {
-                const { add } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { add } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     add('invalid-email'),
@@ -88,14 +85,7 @@ describe('handler', () => {
                 expect(missingFields).to.deep.equal([
                     'firstName',
                     'lastName',
-                    'birthYear',
-                    'birthMonth',
-                    'birthDay',
-                    'addressLine1',
-                    'postalCode',
-                    'city',
                     'country',
-                    'nationality',
                 ])
 
             })
@@ -104,16 +94,7 @@ describe('handler', () => {
             const getValidApplication = () => ({
                 firstName: 'foo',
                 lastName: 'foo',
-                birthYear: 'foo',
-                birthMonth: 'foo',
-                birthDay: 'foo',
-                addressLine1: 'foo',
-                addressLine2: 'foo',
-                city: 'foo',
-                state: 'foo',
-                postalCode: 'foo',
                 country: 'foo',
-                nationality: 'foo',
             })
 
             it('should update the application and move the image', async () => {
@@ -121,12 +102,9 @@ describe('handler', () => {
                 db.update.resolves()
                 const validApplication = getValidApplication()
 
-                const storageHandler = getStorageHandler()
-                storageHandler.store.resolves('foo/bar.png')
+                const expectedApplication = Object.assign({}, validApplication)
 
-                const expectedApplication = Object.assign({ idCardPath: 'foo/bar.png' }, validApplication)
-
-                const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender(), storageHandler)
+                const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await update(expectedPrivateId, 'foo@bar', validApplication, 'temp/path/to/image.png')
 
@@ -142,12 +120,12 @@ describe('handler', () => {
                     // missing fields
                 }
 
-                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
                     'update did not fail as expected',
-                    'Error: missing fields: lastName, birthYear, birthMonth, birthDay, addressLine1, postalCode, city, country, nationality'
+                    'Error: missing fields: lastName, country'
                 )
             })
             it('should throw if application is locked', async () => {
@@ -156,7 +134,7 @@ describe('handler', () => {
                     // missing fields
                 }
 
-                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
@@ -174,22 +152,12 @@ describe('handler', () => {
                     email: 'foo@bar',
                     firstName: 'foo',
                     lastName: 'foo',
-                    birthYear: 'foo',
-                    birthMonth: 'foo',
-                    birthDay: 'foo',
-                    addressLine1: 'foo',
-                    addressLine2: 'foo',
-                    postalCode: 'foo',
-                    city: 'foo',
-                    state: 'foo',
                     country: 'foo',
-                    nationality: 'foo',
-                    idCardPath: 'foo/bar.png',
                     isLocked: true,
                     createdAt: new Date()
                 })
 
-                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 const returnedApplication = await get(expectedPrivateId)
 
@@ -199,16 +167,7 @@ describe('handler', () => {
                     email: 'foo@bar',
                     firstName: 'foo',
                     lastName: 'foo',
-                    birthYear: 'foo',
-                    birthMonth: 'foo',
-                    birthDay: 'foo',
-                    addressLine1: 'foo',
-                    addressLine2: 'foo',
-                    postalCode: 'foo',
-                    city: 'foo',
-                    state: 'foo',
                     country: 'foo',
-                    nationality: 'foo',
                     isLocked: true,
                 })
             })
@@ -216,7 +175,7 @@ describe('handler', () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
 
-                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     get(expectedPrivateId),
@@ -232,7 +191,7 @@ describe('handler', () => {
                 db.get.withArgs(expectedPrivateId).resolves({
                     privateId: expectedPrivateId
                 })
-                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await lock(expectedPrivateId)
 
@@ -254,7 +213,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSecondEmail.resolves()
 
-                const { lock } = getPublicHandler(db, getIdGenerator(), emailSender, getStorageHandler())
+                const { lock } = getPublicHandler(db, getIdGenerator(), emailSender)
 
                 await lock(expectedPrivateId)
 
@@ -273,7 +232,7 @@ describe('handler', () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
 
-                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender(), getStorageHandler())
+                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     lock(expectedPrivateId),

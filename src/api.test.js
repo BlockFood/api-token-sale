@@ -68,12 +68,7 @@ describe('api', () => {
                 const expectedPreSaleApplication = {
                     firstName: 'what',
                     lastName: 'what',
-                    dateOfBirth: 'what',
-                    address: 'what',
-                    postalCode: 'what',
-                    city: 'what',
                     country: 'what',
-                    nationality: 'what',
                 }
                 const app = getPublicApp(handler)
 
@@ -81,50 +76,21 @@ describe('api', () => {
                     .post('/pre-sale/edit/ID42')
                     .field('firstName', 'what')
                     .field('lastName', 'what')
-                    .field('dateOfBirth', 'what')
-                    .field('address', 'what')
-                    .field('postalCode', 'what')
-                    .field('city', 'what')
                     .field('country', 'what')
-                    .field('nationality', 'what')
-                    .attach('id_card', 'test/fixture/logo.png')
                     .expect(200)
 
                 const [firstCall] = handler.update.getCalls()
 
-                const [id, email, application, idCardPath] = firstCall.args
+                const [id, email, application] = firstCall.args
                 expect(id).to.equal('ID42')
                 expect(email).to.equal('foo@bar')
                 expect(application).to.deep.equal(expectedPreSaleApplication)
 
-                assert(fs.existsSync(idCardPath))
-
                 expect(response.body).to.deep.equal({ok : true})
             })
 
-            it('shoud throw if no attached id_card', async() => {
-                const app = getPublicApp()
 
-                const response = await supertest(app)
-                    .post('/pre-sale/edit/ID42')
-                    .field('postalCode', 'what')
-                    .expect(500)
-
-                expect(response.body).to.deep.equal({error : 'Error: missing id_card attachment'})
-            })
-
-            it('shoud throw if no attached id_card', async() => {
-                const app = getPublicApp()
-
-                const response = await supertest(app)
-                    .post('/pre-sale/edit/ID42')
-                    .attach('id_card', 'test/fixture/empty.png')
-                    .expect(500)
-
-                expect(response.body).to.deep.equal({error : 'Error: empty id_card attachment'})
-            })
-
-            it('should throw if handler throws', async () => {
+            it('should throw if handler.update throws', async () => {
                 const handler = {
                     get: sinon.stub(),
                     update: sinon.stub()
@@ -137,13 +103,12 @@ describe('api', () => {
                 const response = await supertest(app)
                     .post('/pre-sale/edit/ID42')
                     .field('nationality', 'what')
-                    .attach('id_card', 'test/fixture/logo.png')
                     .expect(500)
 
                 expect(response.body.error).to.equal('Error: missing fields')
             })
 
-            it('should throw if handler throws', async () => {
+            it('should throw if handler.get throws', async () => {
                 const handler = {
                     get: sinon.stub(),
                     update: sinon.stub()
@@ -156,7 +121,6 @@ describe('api', () => {
                 const response = await supertest(app)
                     .post('/pre-sale/edit/ID42')
                     .field('nationality', 'what')
-                    .attach('id_card', 'test/fixture/logo.png')
                     .expect(500)
 
                 expect(response.body.error).to.equal('Error: cannot find application')

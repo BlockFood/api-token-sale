@@ -5,19 +5,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
     const mandatoryFields = [
         'firstName',
         'lastName',
-        'birthYear',
-        'birthMonth',
-        'birthDay',
-        'addressLine1',
-        'postalCode',
-        'city',
         'country',
-        'nationality',
-    ]
-
-    const optionalFields = [
-        'addressLine2',
-        'state',
     ]
 
     const exportedFields = [
@@ -26,16 +14,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'email',
         'firstName',
         'lastName',
-        'birthYear',
-        'birthMonth',
-        'birthDay',
-        'addressLine1',
-        'addressLine2',
-        'city',
-        'state',
-        'postalCode',
         'country',
-        'nationality',
         'isLocked'
     ]
 
@@ -70,7 +49,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
             await emailSequence.sendFirstEmail(email, privateId)
         },
-        update: async (privateId, email, application, idCardPath) => {
+        update: async (privateId, email, application) => {
             if (application.isLocked) {
                 throw new Error('application is locked')
             }
@@ -79,11 +58,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
 
-            const updatedApplication = Object.assign({}, application)
-
-            updatedApplication.idCardPath = await storage.store(idCardPath)
-
-            await db.update(privateId, updatedApplication)
+            await db.update(privateId, application)
         },
         get: async (privateId) => {
             const applicationFromDB = await db.get(privateId)

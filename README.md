@@ -6,7 +6,7 @@ This API is meant for the pre-sale and token sale process. Its goal is to secure
 
 All applications done through [https://blockfood.io/pre-sale](https://blockfood.io/pre-sale) will generate a new entry in the server, with the following format:
 
-```json
+```
 {
   "publicId": String,
   "privateId": String,
@@ -14,18 +14,9 @@ All applications done through [https://blockfood.io/pre-sale](https://blockfood.
   "email": String,
   "firstName": String,
   "lastName": String,
-  "birthYear": String,
-  "birthMonth": String,
-  "birthDay": String,
-  "addressLine1": String,
-  "addressLine2": String,
-  "postalCode": String,
-  "city": String,
-  "state": String,
   "country": String,
-  "nationality": String,
   
-  "idCardPath": String
+  "isLocked": Boolean
 }
 ```
 
@@ -50,16 +41,7 @@ This route is the second step of the process. It must be called with the private
 
 - firstName: String
 - lastName: String
-- birthYear: String
-- birthMonth: String
-- birthDay: String
-- addressLine1: String
-- addressLine2: String
-- postalCode: String
-- city: String
-- state: String
 - country: String
-- nationality: String
 
 The identity document should be attached to the query:
 
@@ -68,19 +50,9 @@ The identity document should be attached to the query:
 Example:
 ```
 POST /pre-sale/edit/foo
-    .field('firstName', 'foo')
-    .field('lastName', 'foo')
-    .field('birthYear', 'foo')
-    .field('birthMonth', 'foo')
-    .field('birthDay', 'foo')
-    .field('addressLine1', 'foo')
-    .field('addressLine2', 'foo')
-    .field('postalCode', 'foo')
-    .field('city', 'foo')
-    .field('state', 'foo')
-    .field('country', 'foo')
-    .field('nationality', 'foo')
-    .attach('id_card', 'foo/bar.png')
+    .field('firstName', 'what')
+    .field('lastName', 'what')
+    .field('country', 'what')
 ```
 
 Response: ```200 - OK```
@@ -107,16 +79,8 @@ Response:
     "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
-    "birthYear" : "foo",
-    "birthMonth" : "foo",
-    "birthDay" : "foo",
-    "addressLine1" : "foo",
-    "addressLine2" : "foo",
-    "city" : "foo",
-    "state" : "foo",
-    "postalCode" : "foo",
     "country" : "foo",
-    "nationality" : "foo"
+    "isLocked" : true
 }
 ```
 
@@ -138,18 +102,8 @@ Response:
     "email" : "foo@bar",
     "firstName" : "foo",
     "lastName" : "foo",
-    "birthYear" : "foo",
-    "birthMonth" : "foo",
-    "birthDay" : "foo",
-    "addressLine1" : "foo",
-    "addressLine2" : "foo",
-    "city" : "foo",
-    "state" : "foo",
-    "postalCode" : "foo",
     "country" : "foo",
-    "nationality" : "foo",
-    
-    "idCardPath" : "https://.../path/to/image.png"
+    "isLocked" : true
 }
 ```
 

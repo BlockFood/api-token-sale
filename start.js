@@ -9,7 +9,6 @@ const db = require('./src/db')
 const idGenerator = require('./src/idGenerator')
 const emailSequence = require('./src/emailSequence')
 const emailSender = require('./src/emailSender')
-const storage = require('./src/storage')
 
 const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 'utf-8')
 
@@ -31,8 +30,7 @@ const start = async () => {
                     isDebug ?
                         (privateId) => `http://localhost:8080/blockfood.io/pre-sale#privateId=${privateId}` :
                         (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
-                ),
-                storage(path.join(__dirname, 'store'))
+                )
             ),
             process.argv[2] === '--debug'
         ),

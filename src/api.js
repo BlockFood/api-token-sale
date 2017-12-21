@@ -40,14 +40,6 @@ const getPublicApp = (handler = {
                 res.send(500)
                 return
             }
-            if (!files['id_card']) {
-                res.status(500).send({ error: new Error('missing id_card attachment').toString() })
-                return
-            }
-            if (files['id_card'][0].size === 0) {
-                res.status(500).send({ error: new Error('empty id_card attachment').toString() })
-                return
-            }
 
             try {
                 const originalApplication = await handler.get(privateId)
@@ -55,8 +47,7 @@ const getPublicApp = (handler = {
                     application[key] = fields[key][0]
                     return application
                 }, {})
-                const idCardPath = files['id_card'][0].path
-                await handler.update(privateId, originalApplication.email, application, idCardPath)
+                await handler.update(privateId, originalApplication.email, application)
                 res.send({ ok: true })
             } catch (e) {
                 res.status(500).send({ error: e.toString() })
