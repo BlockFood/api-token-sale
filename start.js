@@ -32,7 +32,7 @@ const start = async () => {
                         (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
                 )
             ),
-            process.argv[2] === '--debug'
+            isDebug
         ),
         3663 // food
     )
