@@ -29,7 +29,7 @@ describe('api', () => {
                     .get('/pre-sale/new?email=test@foo.bar')
                     .expect(200)
 
-                expect(response.body).to.deep.equal({ok : true})
+                expect(response.body).to.deep.equal({ ok: true })
             })
             it('should call handlers.add', async () => {
                 const handler = {
@@ -86,16 +86,15 @@ describe('api', () => {
                 expect(email).to.equal('foo@bar')
                 expect(application).to.deep.equal(expectedPreSaleApplication)
 
-                expect(response.body).to.deep.equal({ok : true})
+                expect(response.body).to.deep.equal({ ok: true })
             })
-
 
             it('should throw if handler.update throws', async () => {
                 const handler = {
                     get: sinon.stub(),
                     update: sinon.stub()
                 }
-                handler.get.resolves({email: 'foo@bar'})
+                handler.get.resolves({ email: 'foo@bar' })
                 handler.update.rejects(new Error('missing fields'))
 
                 const app = getPublicApp(handler)
@@ -141,9 +140,9 @@ describe('api', () => {
 
                 assert(handler.lock.calledWith('ID42'))
 
-                expect(response.body).to.deep.equal({ok : true})
+                expect(response.body).to.deep.equal({ ok: true })
             })
-            it('should throw if handler throws', async() => {
+            it('should throw if handler throws', async () => {
                 const handler = {
                     lock: sinon.stub(),
                 }
@@ -206,6 +205,24 @@ describe('api', () => {
 
                 const response = await supertest(app)
                     .get('/admin/pre-sale/review/publicId')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+        })
+
+        describe('GET /admin/pre-sale/review', () => {
+            it('should return whatever handlers.getAll returns', async () => {
+                const handler = {
+                    getAll: sinon.stub()
+                }
+                const whatever = { whatevs: true }
+                handler.getAll.resolves(whatever)
+
+                const app = getPrivateApp(handler)
+
+                const response = await supertest(app)
+                    .get('/admin/pre-sale/review')
                     .expect(200)
 
                 expect(response.body).to.deep.equal(whatever)

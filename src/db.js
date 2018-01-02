@@ -25,6 +25,10 @@ module.exports = async (dbUri, collectionName = 'pre-sale-applications') => {
             return await collection.findOne({ publicId })
         },
 
+        getAll: async () => {
+            return await collection.find().toArray()
+        },
+
         close: async () => client.close()
     }
 }

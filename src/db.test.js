@@ -25,15 +25,15 @@ describe('db', () => {
     after(async () => {
         stopDbInstance()
     })
-    beforeEach(async() => {
-        dbHandler = await db(dbUri)
+    beforeEach(async () => {
+        dbHandler = await db(dbUri, 'pre-sale-test-' + ~~(Math.random()*100000))
     })
-    afterEach(async() => {
+    afterEach(async () => {
         dbHandler && dbHandler.close()
     })
 
     describe('add', () => {
-        it('should add the application in the db', async() => {
+        it('should add the application in the db', async () => {
             await dbHandler.add({ email: 'foo@bar', privateId: 'privateId', publicId: 'publicId' })
 
             const application = await dbHandler.get('privateId')
@@ -45,10 +45,10 @@ describe('db', () => {
     })
 
     describe('update', () => {
-        it('should update the application in the db', async() => {
+        it('should update the application in the db', async () => {
             await dbHandler.add({ email: 'foo@bar', privateId: 'privateId', publicId: 'publicId' })
 
-            await dbHandler.update('privateId', { newField: true})
+            await dbHandler.update('privateId', { newField: true })
 
             const application = await dbHandler.get('privateId')
 
@@ -60,7 +60,7 @@ describe('db', () => {
     })
 
     describe('get', () => {
-        it('should return null if no value found', async() => {
+        it('should return null if no value found', async () => {
             const applicationNotFound = await dbHandler.get('not-existing-id')
 
             expect(applicationNotFound).to.be.null
@@ -68,7 +68,7 @@ describe('db', () => {
     })
 
     describe('getWithPublicId', () => {
-        it('returns the application with the given publicId', async() => {
+        it('returns the application with the given publicId', async () => {
             await dbHandler.add({ email: 'foo@bar', privateId: 'privateId', publicId: 'publicId' })
 
             const application = await dbHandler.getWithPublicId('publicId')
@@ -76,6 +76,22 @@ describe('db', () => {
             expect(application.email).to.equal('foo@bar')
             expect(application.privateId).to.equal('privateId')
             expect(application.publicId).to.equal('publicId')
+        })
+    })
+
+    describe('getAll', () => {
+        it('returns all applications', async () => {
+            await dbHandler.add({ email: 'foo@bar', privateId: 'privateId', publicId: 'publicId' })
+
+            const applications = await dbHandler.getAll()
+
+            expect(applications.length).to.equal(1)
+
+            const firstApplication = applications[0]
+
+            expect(firstApplication.email).to.equal('foo@bar')
+            expect(firstApplication.privateId).to.equal('privateId')
+            expect(firstApplication.publicId).to.equal('publicId')
         })
     })
 })

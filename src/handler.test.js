@@ -26,6 +26,7 @@ describe('handler', () => {
         update: sinon.stub(),
         get: sinon.stub(),
         getWithPublicId: sinon.stub(),
+        getAll: sinon.stub(),
     })
 
     const getIdGenerator = () => ({
@@ -204,7 +205,7 @@ describe('handler', () => {
                 })
             })
 
-            it('should send second email', async() => {
+            it('should send second email', async () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves({
                     email: 'foo@bar',
@@ -216,7 +217,6 @@ describe('handler', () => {
                 const { lock } = getPublicHandler(db, getIdGenerator(), emailSender)
 
                 await lock(expectedPrivateId)
-
 
                 const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
                 const [email, application] = emailSenderFirstCall.args
@@ -255,6 +255,20 @@ describe('handler', () => {
                 const returnedApplication = await get(expectedPublicId)
 
                 expect(returnedApplication).to.deep.equal(whatever)
+            })
+        })
+
+        describe('getAll', () => {
+            it('should return the list of all applications', async () => {
+                const db = getDb()
+                const whatever = { whatevs: true }
+                db.getAll.resolves(whatever)
+
+                const { getAll } = getPrivateHandler(db)
+
+                const returnedApplications = await getAll()
+
+                expect(returnedApplications).to.deep.equal(whatever)
             })
         })
     })

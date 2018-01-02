@@ -77,6 +77,7 @@ const getPublicApp = (handler = {
 
 const getPrivateApp = (handler = {
     get: async () => {},
+    getAll: async () => {},
 }) => {
     const app = express()
 
@@ -84,6 +85,12 @@ const getPrivateApp = (handler = {
         const application = await handler.get(req.params.publicId)
         res.send(application)
     })
+
+    app.get('/admin/pre-sale/review', async (req, res) => {
+        const applications = await handler.getAll()
+        res.send(applications)
+    })
+
     return app
 }
 
