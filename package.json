@@ -12,7 +12,8 @@
     "daemon:public:kill": "kill -9 $(lsof -t -i:3663)",
     "daemon:public:start": "nohup npm start > public-api.logs &",
     "daemon:private:kill": "kill -9 $(lsof -t -i:25624)",
-    "daemon:private:start": "nohup npm run start:private > private-api.logs &"
+    "daemon:private:start": "nohup npm run start:private > private-api.logs &",
+    "daemon:tail": "tail -f *.logs"
   },
   "repository": {
     "type": "git",
