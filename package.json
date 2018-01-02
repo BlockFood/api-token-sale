@@ -7,7 +7,12 @@
     "start": "node start.js",
     "start:private": "node start-private-api.js",
     "tunnel": "ssh -L 25624:localhost:25624 root@api.blockfood.io",
-    "test": "mocha src/**/*.test.js --colors"
+    "test": "mocha src/**/*.test.js --colors",
+    "daemon": "npm run daemon:public:kill; npm run daemon:private:kill; npm run daemon:public:start; npm run daemon:private:start",
+    "daemon:public:kill": "kill -9 $(lsof -t -i:3663)",
+    "daemon:public:start": "nohup npm start > public-api.logs &",
+    "daemon:private:kill": "kill -9 $(lsof -t -i:25624)",
+    "daemon:private:start": "nohup npm run start:private > private-api.logs &"
   },
   "repository": {
     "type": "git",
