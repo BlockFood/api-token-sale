@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node start.js",
     "start:private": "node start-private-api.js",
+    "tunnel": "ssh -L 25624:localhost:25624 root@api.blockfood.io",
     "test": "mocha src/**/*.test.js --colors"
   },
   "repository": {

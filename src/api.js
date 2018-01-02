@@ -78,8 +78,14 @@ const getPublicApp = (handler = {
 const getPrivateApp = (handler = {
     get: async () => {},
     getAll: async () => {},
-}) => {
+}, debug = false) => {
     const app = express()
+
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', debug ? '*' : 'https://blockfood.io')
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+        next()
+    })
 
     app.get('/admin/pre-sale/review/:publicId', async (req, res) => {
         const application = await handler.get(req.params.publicId)
