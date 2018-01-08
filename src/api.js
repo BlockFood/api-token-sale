@@ -75,7 +75,7 @@ const getPublicApp = (handler = {
             const application = await handler.get(privateId)
             const txHashes = application.txHashes || []
             txHashes.push(txHash)
-            await handler.update(privateId, { txHashes })
+            await handler.update(privateId, { txHashes }, false)
             res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })

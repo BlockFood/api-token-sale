@@ -50,12 +50,12 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
             await emailSequence.sendFirstEmail(email, privateId)
         },
-        update: async (privateId, application) => {
+        update: async (privateId, application, validate = true) => {
             if (application.isLocked) {
                 throw new Error('application is locked')
             }
 
-            if (!validateApplicationForUpdate(application)) {
+            if (validate && !validateApplicationForUpdate(application)) {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
 

@@ -175,9 +175,10 @@ describe('api', () => {
 
                 const [firstCall] = handler.update.getCalls()
 
-                const [id, application] = firstCall.args
+                const [id, application, validate] = firstCall.args
                 expect(id).to.equal('ID42')
                 expect(application).to.deep.equal(expectedPreSaleApplication)
+                expect(validate).to.equal(false)
 
                 expect(response.body).to.deep.equal({ ok: true })
             })

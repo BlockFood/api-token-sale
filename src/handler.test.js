@@ -129,6 +129,15 @@ describe('handler', () => {
                     'Error: missing fields: lastName, country'
                 )
             })
+            it('should work if invalid application with validate=false', async () => {
+                const invalidApplication = {
+                    txHashes: ['txHash']
+                }
+
+                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
+
+                await update(expectedPrivateId, invalidApplication, false)
+            })
             it('should throw if application is locked', async () => {
                 const invalidApplication = {
                     isLocked: 'true',
