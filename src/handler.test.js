@@ -98,7 +98,7 @@ describe('handler', () => {
                 country: 'foo',
             })
 
-            it('should update the application and move the image', async () => {
+            it('should update the application', async () => {
                 const db = getDb()
                 db.update.resolves()
                 const validApplication = getValidApplication()
@@ -107,7 +107,7 @@ describe('handler', () => {
 
                 const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
-                await update(expectedPrivateId, 'foo@bar', validApplication, 'temp/path/to/image.png')
+                await update(expectedPrivateId, validApplication)
 
                 const dbFirstCall = db.update.getCall(0)
                 const [privateId, application] = dbFirstCall.args
@@ -124,7 +124,7 @@ describe('handler', () => {
                 const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
-                    update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
+                    update(expectedPrivateId, invalidApplication),
                     'update did not fail as expected',
                     'Error: missing fields: lastName, country'
                 )
@@ -138,7 +138,7 @@ describe('handler', () => {
                 const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
-                    update(expectedPrivateId, 'foo@bar', invalidApplication, 'temp/path/to/image.png'),
+                    update(expectedPrivateId, invalidApplication),
                     'Get did not fail while returning locked application',
                     'Error: application is locked'
                 )
@@ -154,6 +154,7 @@ describe('handler', () => {
                     firstName: 'foo',
                     lastName: 'foo',
                     country: 'foo',
+                    txHashes: [],
                     isLocked: true,
                     createdAt: new Date()
                 })
@@ -169,6 +170,7 @@ describe('handler', () => {
                     firstName: 'foo',
                     lastName: 'foo',
                     country: 'foo',
+                    txHashes: [],
                     isLocked: true,
                 })
             })

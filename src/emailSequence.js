@@ -8,7 +8,8 @@ module.exports = (send, getNextStepUrl) => {
                 title: 'BlockFood - Next step for pre-sale',
                 content: `<p>Thank you very much for applying to the pre-sale process.</p>
                     <p>In order to finalize your application, you must complete the following form:</p>
-                    <p class='call-to-action-container'><a href='${getNextStepUrl(privateId)}' class='call-to-action'>Next step</a></p>`,
+                    <p class='call-to-action-container'><a href='${getNextStepUrl(privateId)}' class='call-to-action'>Next step</a></p>
+                    <p><i>Do not share this link we anyone. This is your private link.</i></p>`,
                 signature: 'Best regards,<br><br>BlockFood team'
             })
         },
@@ -20,6 +21,7 @@ module.exports = (send, getNextStepUrl) => {
                     <p>Thank you for submitting your information.</p>
                     <p>If you did not already use the smart contract to finalize your application, follow this link:</p>
                     <p class='call-to-action-container'><a href='${getNextStepUrl(application.privateId)}' class='call-to-action'>Finalize application</a></p>
+                    <p><i>Do not share this link we anyone. This is your private link.</i></p>
                     <p>Once your application is finalized, the BlockFood team will review your information and accept your participation if everything is okay. You should receive a confirmation email in the next 24 hours.</p>
                     <p>Thanks again for being awesome.</p>`,
 

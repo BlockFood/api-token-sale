@@ -63,6 +63,21 @@ const getPublicApp = (handler = {
         }
     })
 
+    app.post('/pre-sale/tx/:privateId/:txHash', async (req, res) => {
+        const privateId = req.params.privateId
+        const txHash = req.params.txHash
+
+        try {
+            const application = await handler.get(privateId)
+            const txHashes = application.txHashes || []
+            txHashes.push(txHash)
+            await handler.update(privateId, { txHashes })
+            res.send({ ok: true })
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
     app.get('/pre-sale/review/:privateId', async (req, res) => {
         try {
             const application = await handler.get(req.params.privateId)
@@ -70,6 +85,14 @@ const getPublicApp = (handler = {
         } catch (e) {
             res.status(500).send({ error: e.toString() })
         }
+    })
+
+    app.get('/pre-sale/smart-contract', async (req, res) => {
+        if (debug) {
+            res.send({ address: '0x45B213dac7E8BD71Ffe8E09A7471dF8728155342' })
+            return
+        }
+        res.send({ address: '0x762C128A5BAC6553e66fb2c07bEE864576966C26' })
     })
 
     return app

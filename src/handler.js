@@ -15,6 +15,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'firstName',
         'lastName',
         'country',
+        'txHashes',
         'isLocked'
     ]
 
@@ -49,7 +50,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
             await emailSequence.sendFirstEmail(email, privateId)
         },
-        update: async (privateId, email, application) => {
+        update: async (privateId, application) => {
             if (application.isLocked) {
                 throw new Error('application is locked')
             }

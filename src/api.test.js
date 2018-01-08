@@ -158,6 +158,63 @@ describe('api', () => {
             })
         })
 
+        describe('POST /pre-sale/tx/:privateId/:txHash', () => {
+            it('should store the transaction hash in the database', async () => {
+                const handler = {
+                    get: sinon.stub(),
+                    update: sinon.stub()
+                }
+                handler.get.withArgs('ID42').resolves({ email: 'foo@bar' })
+
+                const expectedPreSaleApplication = {
+                    txHashes: ['0x7611a27728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6']
+                }
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .post('/pre-sale/tx/ID42/0x7611a27728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6')
+                    .expect(200)
+
+                const [firstCall] = handler.update.getCalls()
+
+                const [id, application] = firstCall.args
+                expect(id).to.equal('ID42')
+                expect(application).to.deep.equal(expectedPreSaleApplication)
+
+                expect(response.body).to.deep.equal({ ok: true })
+            })
+
+            it('should be able to add several hashes', async () => {
+                const handler = {
+                    get: sinon.stub(),
+                    update: sinon.stub()
+                }
+                handler.get.withArgs('ID42').resolves({
+                    email: 'foo@bar',
+                    txHashes: [
+                        '0x4242427728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6'
+                    ]
+                })
+
+                const expectedPreSaleApplication = {
+                    txHashes: [
+                        '0x4242427728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6',
+                        '0x7611a27728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6'
+                    ]
+                }
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .post('/pre-sale/tx/ID42/0x7611a27728c08a090088a86cab4157374e0edead4c80f44c4ac9c676a40c61c6')
+                    .expect(200)
+
+                const [firstCall] = handler.update.getCalls()
+
+                const [_, application] = firstCall.args
+                expect(application).to.deep.equal(expectedPreSaleApplication)
+            })
+        })
+
         describe('GET /pre-sale/review/:privateId', () => {
             it('should return whatever handlers.get returns', async () => {
                 const handler = {
@@ -187,6 +244,27 @@ describe('api', () => {
                     .expect(500)
 
                 expect(response.body.error).to.equal('Error: application not found')
+            })
+        })
+
+        describe('GET /pre-sale/smart-contract', async () => {
+            it('should return the correct addresses', async () => {
+                const app = getPublicApp()
+
+                const response = await supertest(app)
+                    .get('/pre-sale/smart-contract')
+                    .expect(200)
+
+                expect(response.body.address).to.equal('0x762C128A5BAC6553e66fb2c07bEE864576966C26')
+            })
+            it('should return the debug value', async () => {
+                const app = getPublicApp({}, true)
+
+                const response = await supertest(app)
+                    .get('/pre-sale/smart-contract')
+                    .expect(200)
+
+                expect(response.body.address).to.equal('0x45B213dac7E8BD71Ffe8E09A7471dF8728155342')
             })
         })
 
