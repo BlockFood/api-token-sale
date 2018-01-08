@@ -39,12 +39,11 @@ const getPublicApp = (handler = {
             }
 
             try {
-                const originalApplication = await handler.get(privateId)
                 const application = Object.keys(fields).reduce((application, key) => {
                     application[key] = fields[key][0]
                     return application
                 }, {})
-                await handler.update(privateId, originalApplication.email, application)
+                await handler.update(privateId, application)
                 res.send({ ok: true })
             } catch (e) {
                 res.status(500).send({ error: e.toString() })
@@ -66,6 +65,11 @@ const getPublicApp = (handler = {
     app.post('/pre-sale/tx/:privateId/:txHash', async (req, res) => {
         const privateId = req.params.privateId
         const txHash = req.params.txHash
+
+        if (!/0x[0-9A-Fa-f]+/.test(txHash) || txHash.length !== 66) {
+            res.status(500).send({ error: (new Error('invalid transaction hash')).toString() })
+            return
+        }
 
         try {
             const application = await handler.get(privateId)

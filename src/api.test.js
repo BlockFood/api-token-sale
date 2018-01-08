@@ -81,9 +81,8 @@ describe('api', () => {
 
                 const [firstCall] = handler.update.getCalls()
 
-                const [id, email, application] = firstCall.args
+                const [id, application] = firstCall.args
                 expect(id).to.equal('ID42')
-                expect(email).to.equal('foo@bar')
                 expect(application).to.deep.equal(expectedPreSaleApplication)
 
                 expect(response.body).to.deep.equal({ ok: true })
@@ -112,7 +111,6 @@ describe('api', () => {
                     get: sinon.stub(),
                     update: sinon.stub()
                 }
-                handler.get.rejects(new Error('cannot find application'))
                 handler.update.rejects(new Error('missing fields'))
 
                 const app = getPublicApp(handler)
@@ -122,7 +120,7 @@ describe('api', () => {
                     .field('nationality', 'what')
                     .expect(500)
 
-                expect(response.body.error).to.equal('Error: cannot find application')
+                expect(response.body.error).to.equal('Error: missing fields')
             })
         })
 
@@ -212,6 +210,15 @@ describe('api', () => {
 
                 const [_, application] = firstCall.args
                 expect(application).to.deep.equal(expectedPreSaleApplication)
+            })
+            it('should throw if tx hash is not correct', async () => {
+                const app = getPublicApp()
+
+                const response = await supertest(app)
+                    .post('/pre-sale/tx/ID42/0x7611a2772857374e0edead4c80f44c4ac9c676a40c61c6')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: invalid transaction hash')
             })
         })
 
