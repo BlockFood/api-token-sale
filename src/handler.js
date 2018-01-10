@@ -35,7 +35,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
     return {
         validateApplicationForUpdate,
         getMissingFieldsForUpdate,
-        add: async (email) => {
+        add: async (email, now = new Date()) => {
             if (!emailValidator.validate(email)) {
                 throw new Error('invalid email')
             }
@@ -45,12 +45,13 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             await db.add({
                 email,
                 privateId,
-                publicId
+                publicId,
+                creation: now
             })
 
             await emailSequence.sendFirstEmail(email, privateId)
         },
-        update: async (privateId, application, validate = true) => {
+        update: async (privateId, application, validate = true, now = new Date()) => {
             if (application.isLocked) {
                 throw new Error('application is locked')
             }
@@ -58,6 +59,8 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             if (validate && !validateApplicationForUpdate(application)) {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
+
+            application.lastUpdate = now
 
             await db.update(privateId, application)
         },
@@ -73,7 +76,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 return application
             }, {})
         },
-        lock: async (privateId) => {
+        lock: async (privateId, now = new Date()) => {
             const applicationFromDB = await db.get(privateId)
 
             if (!applicationFromDB) {
@@ -81,7 +84,9 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             }
 
             const lockedApplication = Object.assign({}, applicationFromDB)
+
             lockedApplication.isLocked = true
+            lockedApplication.lockDate = now
 
             await db.update(privateId, lockedApplication)
 

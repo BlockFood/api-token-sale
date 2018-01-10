@@ -275,7 +275,6 @@ describe('api', () => {
                 expect(response.body.address).to.equal('0x45B213dac7E8BD71Ffe8E09A7471dF8728155342')
             })
         })
-
     })
 
     describe('getPrivateApp', () => {

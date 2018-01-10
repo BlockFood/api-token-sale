@@ -53,14 +53,17 @@ describe('handler', () => {
 
                 const { add } = getPublicHandler(db, idGenerator, emailSender)
 
-                await add('foo@bar.baz')
+                const now = new Date()
+
+                await add('foo@bar.baz', now)
 
                 const dbFirstCall = db.add.getCall(0)
                 const [newApplication] = dbFirstCall.args
                 expect(newApplication).to.deep.equal({
                     email: 'foo@bar.baz',
                     privateId: expectedPrivateId,
-                    publicId: expectedPublicId
+                    publicId: expectedPublicId,
+                    creation: now
                 })
 
                 const emailSenderFirstCall = emailSender.sendFirstEmail.getCall(0)
@@ -103,11 +106,14 @@ describe('handler', () => {
                 db.update.resolves()
                 const validApplication = getValidApplication()
 
-                const expectedApplication = Object.assign({}, validApplication)
+                const now = new Date()
+                const expectedApplication = Object.assign({
+                    lastUpdate: now
+                }, validApplication)
 
                 const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
-                await update(expectedPrivateId, validApplication)
+                await update(expectedPrivateId, validApplication, true, now)
 
                 const dbFirstCall = db.update.getCall(0)
                 const [privateId, application] = dbFirstCall.args
@@ -205,13 +211,16 @@ describe('handler', () => {
                 })
                 const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
-                await lock(expectedPrivateId)
+                const now = new Date()
+
+                await lock(expectedPrivateId, now)
 
                 const updateFirstCall = db.update.getCall(0)
                 const [privateId, application] = updateFirstCall.args
                 expect(privateId).to.equal(expectedPrivateId)
                 expect(application).to.deep.equal({
                     privateId: expectedPrivateId,
+                    lockDate: now,
                     isLocked: true
                 })
             })
@@ -227,7 +236,9 @@ describe('handler', () => {
 
                 const { lock } = getPublicHandler(db, getIdGenerator(), emailSender)
 
-                await lock(expectedPrivateId)
+                const now = new Date()
+
+                await lock(expectedPrivateId, now)
 
                 const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
                 const [email, application] = emailSenderFirstCall.args
@@ -235,6 +246,7 @@ describe('handler', () => {
                 expect(application).to.deep.equal({
                     email: 'foo@bar',
                     privateId: expectedPrivateId,
+                    lockDate: now,
                     isLocked: true
                 })
 
