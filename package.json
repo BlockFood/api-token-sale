@@ -7,6 +7,7 @@
     "start": "node start.js",
     "start:private": "node start-private-api.js",
     "tunnel": "ssh -L 25624:localhost:25624 root@api.blockfood.io",
+    "tunnel-public": "ssh -L 3663:localhost:3663 root@api.blockfood.io",
     "test": "mocha src/**/*.test.js --colors",
     "daemon": "npm run daemon:public:kill; npm run daemon:private:kill; npm run daemon:public:start; npm run daemon:private:start",
     "daemon:public:kill": "kill -9 $(lsof -t -i:3663)",
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/BlockFood/blockfood-api#readme",
   "devDependencies": {
+    "axios": "^0.17.1",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "mongo-in-memory": "0.0.5",
