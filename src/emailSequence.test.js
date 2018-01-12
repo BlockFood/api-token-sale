@@ -23,7 +23,7 @@ describe('emailSequence', () => {
             expect(sent.content).to.equal(`<p>Thank you very much for applying to the pre-sale process.</p>
                     <p>In order to finalize your application, you must complete the following form:</p>
                     <p class='call-to-action-container'><a href='url/to/pre-sale-form/privateId' class='call-to-action'>Next step</a></p>
-                    <p><i>Do not share this link we anyone. This is your private link.</i></p>`)
+                    <p><i>Do not share this link with anyone. This is your private link.</i></p>`)
         })
     })
 
@@ -54,7 +54,7 @@ describe('emailSequence', () => {
                     <p>Thank you for submitting your information.</p>
                     <p>If you did not already use the smart contract to finalize your application, follow this link:</p>
                     <p class='call-to-action-container'><a href='url/to/pre-sale-form/privateId' class='call-to-action'>Finalize application</a></p>
-                    <p><i>Do not share this link we anyone. This is your private link.</i></p>
+                    <p><i>Do not share this link with anyone. This is your private link.</i></p>
                     <p>Once your application is finalized, the BlockFood team will review your information and accept your participation if everything is okay. You should receive a confirmation email in the next 24 hours.</p>
                     <p>Thanks again for being awesome.</p>`)
         })
