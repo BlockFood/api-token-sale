@@ -38,7 +38,7 @@ describe('emailSequence', () => {
                 lastName: 'bar',
                 privateId: 'privateId'
             }
-            const now = new Date('2018-02-08T05:00:00.000Z')
+            const now = new Date('2018-02-07T14:30:00.000Z')
 
             await emailSequence(send, getNextStepUrl).sendSecondEmail('foo@bar', application, now)
 
@@ -50,7 +50,7 @@ describe('emailSequence', () => {
 
             expect(email).to.equal('foo@bar')
 
-            expect(sent.title).to.equal('BlockFood - 10 hours left for pre-sale')
+            expect(sent.title).to.equal('BlockFood - 1 day left for pre-sale')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
             expect(sent.content.length > 0).to.equal(true)
         })

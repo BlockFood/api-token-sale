@@ -28,9 +28,11 @@ module.exports = (send, getNextStepUrl) => {
 
             const endDate = new Date('2018-02-08T15:00:00.000Z')
 
+            const name = application.firstName || 'early supporter'
+
             await send(email, {
                 title: `BlockFood - ${getRemainingTime(endDate)} left for pre-sale`,
-                content: `<p>Dear ${escape(application.firstName)},</p>
+                content: `<p>Dear ${escape(name)},</p>
                     <p>Thank you very much for your participation to the BlockFood Pre-Sale.</p>
                     <p>There is still time to finalize your application. Follow the link below and start interacting with our smart contract.</p>
                     <p>The Pre-Sale form has been updated to explain how to interact with our smart-contract using <b>MyEtherWallet</b> if you are more familiar with it.</p>
