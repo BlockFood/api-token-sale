@@ -105,6 +105,7 @@ const getPublicApp = (handler = {
 const getPrivateApp = (handler = {
     get: async () => {},
     getAll: async () => {},
+    sendReminder: async () => {}
 }, debug = false) => {
     const app = express()
 
@@ -122,6 +123,16 @@ const getPrivateApp = (handler = {
     app.get('/admin/pre-sale/review', async (req, res) => {
         const applications = await handler.getAll()
         res.send(applications)
+    })
+
+    app.get('/admin/pre-sale/email/reminder/:privateId', async (req, res) => {
+        const privateId = req.privateId
+        try {
+            await handler.sendReminder(privateId)
+            res.send({ ok: true })
+        } catch(e) {
+            res.status(500).send({ error: e.toString() })
+        }
     })
 
     return app

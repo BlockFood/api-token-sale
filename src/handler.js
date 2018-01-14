@@ -89,16 +89,29 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             lockedApplication.lockDate = now
 
             await db.update(privateId, lockedApplication)
-
-            await emailSequence.sendSecondEmail(lockedApplication.email, lockedApplication)
         }
     }
 }
 
-const getPrivateHandler = (db) => {
+const getPrivateHandler = (db, emailSequence) => {
     return {
         get: async (publicId) => db.getWithPublicId(publicId),
         getAll: async () => db.getAll(),
+        sendReminder: async (privateId, now = new Date()) => {
+            const applicationFromDb = await db.get(privateId)
+
+            if (!applicationFromDb) {
+                throw new Error('application not found')
+            }
+
+            if (!applicationFromDb.reminderDate) {
+                applicationFromDb.reminderDate = now
+
+                await db.update(privateId, applicationFromDb)
+
+                emailSequence.sendSecondEmail(applicationFromDb.email, applicationFromDb)
+            }
+        }
     }
 }
 

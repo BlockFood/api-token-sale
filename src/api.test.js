@@ -313,5 +313,35 @@ describe('api', () => {
                 expect(response.body).to.deep.equal(whatever)
             })
         })
+
+        describe('GET /admin/pre-sale/email/reminder/:privateId', () => {
+            it('should call handler.sendReminder', async () => {
+                const handler = {
+                    sendReminder: sinon.stub()
+                }
+
+                const app = getPrivateApp(handler)
+
+                await supertest(app)
+                    .get('/admin/pre-sale/email/reminder/id42')
+                    .expect(200)
+
+                expect(handler.sendReminder.calledWith('id42'))
+            })
+            it('should throw if handler throws', async () => {
+                const handler = {
+                    sendReminder: sinon.stub()
+                }
+                handler.sendReminder.rejects(new Error('could not find application'))
+
+                const app = getPrivateApp(handler)
+
+                const response = await supertest(app)
+                    .get('/admin/pre-sale/email/reminder/id42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: could not find application')
+            })
+        })
     })
 })

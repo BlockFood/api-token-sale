@@ -224,33 +224,33 @@ describe('handler', () => {
                     isLocked: true
                 })
             })
+            /*
+                        it('should send second email', async () => {
+                            const db = getDb()
+                            db.get.withArgs(expectedPrivateId).resolves({
+                                email: 'foo@bar',
+                                privateId: expectedPrivateId
+                            })
+                            const emailSender = getEmailSender()
+                            emailSender.sendSecondEmail.resolves()
 
-            it('should send second email', async () => {
-                const db = getDb()
-                db.get.withArgs(expectedPrivateId).resolves({
-                    email: 'foo@bar',
-                    privateId: expectedPrivateId
-                })
-                const emailSender = getEmailSender()
-                emailSender.sendSecondEmail.resolves()
+                            const { lock } = getPublicHandler(db, getIdGenerator(), emailSender)
 
-                const { lock } = getPublicHandler(db, getIdGenerator(), emailSender)
+                            const now = new Date()
 
-                const now = new Date()
+                            await lock(expectedPrivateId, now)
 
-                await lock(expectedPrivateId, now)
+                            const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
+                            const [email, application] = emailSenderFirstCall.args
+                            expect(email).to.equal('foo@bar')
+                            expect(application).to.deep.equal({
+                                email: 'foo@bar',
+                                privateId: expectedPrivateId,
+                                lockDate: now,
+                                isLocked: true
+                            })
 
-                const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
-                const [email, application] = emailSenderFirstCall.args
-                expect(email).to.equal('foo@bar')
-                expect(application).to.deep.equal({
-                    email: 'foo@bar',
-                    privateId: expectedPrivateId,
-                    lockDate: now,
-                    isLocked: true
-                })
-
-            })
+                        })*/
             it('should throw if application not found', async () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
@@ -292,6 +292,100 @@ describe('handler', () => {
                 const returnedApplications = await getAll()
 
                 expect(returnedApplications).to.deep.equal(whatever)
+            })
+        })
+
+        describe('sendReminder', () => {
+            it('should send second email', async () => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSecondEmail.resolves()
+
+                const { sendReminder } = getPrivateHandler(db, emailSender)
+
+                const now = new Date()
+
+                await sendReminder(expectedPrivateId, now)
+
+                const emailSenderFirstCall = emailSender.sendSecondEmail.getCall(0)
+                const [email, application] = emailSenderFirstCall.args
+                expect(email).to.equal('foo@bar')
+                expect(application).to.deep.equal({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    reminderDate: now
+                })
+            })
+            it('should send second email only once', async () => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                }).onCall(1).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    reminderDate: now
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSecondEmail.resolves()
+
+                const { sendReminder } = getPrivateHandler(db, emailSender)
+
+                await sendReminder(expectedPrivateId, now)
+                await sendReminder(expectedPrivateId, now)
+
+                expect(emailSender.sendSecondEmail.calledOnce).to.equal(true)
+            })
+            it('should update the application to add the reminder date', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                })
+                db.update.resolves()
+
+                const expectedUpdatedApplication = {
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    reminderDate: now
+                }
+
+                const emailSender = getEmailSender()
+                emailSender.sendSecondEmail.resolves()
+
+                const { sendReminder } = getPrivateHandler(db, emailSender)
+
+                await sendReminder(expectedPrivateId, now)
+
+                expect(db.update.getCall(0).args).to.deep.equal([
+                    expectedPrivateId,
+                    expectedUpdatedApplication
+                ])
+            })
+            it('should throw if application not find', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .resolves(null)
+
+                const { sendReminder } = getPrivateHandler(db)
+
+                await expectFailure(
+                    sendReminder(expectedPrivateId, now),
+                    'sendReminder did not fail',
+                    'Error: application not found'
+                )
             })
         })
     })
