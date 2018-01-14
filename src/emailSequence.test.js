@@ -38,17 +38,19 @@ describe('emailSequence', () => {
                 lastName: 'bar',
                 privateId: 'privateId'
             }
+            const now = new Date('2018-02-08T05:00:00.000Z')
 
-            await emailSequence(send, getNextStepUrl).sendSecondEmail('foo@bar', application)
+            await emailSequence(send, getNextStepUrl).sendSecondEmail('foo@bar', application, now)
 
             assert(send.calledOnce)
 
             const sendCall = send.getCall(0)
             const [email, sent] = sendCall.args
 
+
             expect(email).to.equal('foo@bar')
 
-            expect(sent.title).to.equal('BlockFood - There is still time to finalize your application')
+            expect(sent.title).to.equal('BlockFood - 10 hours left for pre-sale')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
             expect(sent.content.length > 0).to.equal(true)
         })

@@ -14,15 +14,29 @@ module.exports = (send, getNextStepUrl) => {
             })
         },
 
-        sendSecondEmail: async (email, application) => {
+        sendSecondEmail: async (email, application, now = new Date()) => {
+            const getRemainingTime = (date) => {
+                const diffInHours = (date.getTime() - now.getTime()) / (60 * 60 * 1000)
+
+                const days =  ~~((diffInHours) / (24))
+                const hours = ~~diffInHours
+                if (days <= 0) {
+                    return `${hours} hour${hours>1?'s':''}`
+                }
+                return `${days} day${days>1?'s':''}`
+            }
+
+            const endDate = new Date('2018-02-08T15:00:00.000Z')
+
             await send(email, {
-                title: 'BlockFood - There is still time to finalize your application',
+                title: `BlockFood - ${getRemainingTime(endDate)} left for pre-sale`,
                 content: `<p>Dear ${escape(application.firstName)},</p>
                     <p>Thank you very much for your participation to the BlockFood Pre-Sale.</p>
                     <p>There is still time to finalize your application. Follow the link below and start interacting with our smart contract.</p>
-                    <p>The Pre-Sale form has been updated to explain how to interact with our smart-contract using MyEtherWallet if you are more familiar with it.</p>
+                    <p>The Pre-Sale form has been updated to explain how to interact with our smart-contract using <b>MyEtherWallet</b> if you are more familiar with it.</p>
 <p class='call-to-action-container'><a href='${getNextStepUrl(application.privateId)}' class='call-to-action'>Finalize application</a></p>
                     <p><i>Do not share this link with anyone. This is your private link.</i></p>
+                    <p></p>
                     <p>We need your help! There is still time until the end of the pre-sale and our community is still growing. We need your help getting our message out there!<ul>
 <li><a href="mailto:?&subject=I've participated to the BlockFood Pre-Sale&body=Hey%20there,%0A%0AI%20just%20want%20to%20share%20with%20you%20this%20project%20I%20like%0A%0Ahttps%3A//blockfood.io" target='_blank'>Send Email</a></li>
 <li><a href="https://twitter.com/home?status=I've%20participated%20to%20the%20BlockFood%20Pre-Sale!%20Check%20out%20their%20awesome%20project%0A%0Ahttps%3A//blockfood.io" target='_blank'>Share on Twitter</a></li>
