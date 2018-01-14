@@ -314,7 +314,7 @@ describe('api', () => {
             })
         })
 
-        describe('GET /admin/pre-sale/email/reminder/:privateId', () => {
+        describe('GET /admin/pre-sale/reminder/:privateId', () => {
             it('should call handler.sendReminder', async () => {
                 const handler = {
                     sendReminder: sinon.stub()
@@ -323,7 +323,7 @@ describe('api', () => {
                 const app = getPrivateApp(handler)
 
                 await supertest(app)
-                    .get('/admin/pre-sale/email/reminder/id42')
+                    .get('/admin/pre-sale/reminder/id42')
                     .expect(200)
 
                 expect(handler.sendReminder.calledWith('id42'))
@@ -337,7 +337,7 @@ describe('api', () => {
                 const app = getPrivateApp(handler)
 
                 const response = await supertest(app)
-                    .get('/admin/pre-sale/email/reminder/id42')
+                    .get('/admin/pre-sale/reminder/id42')
                     .expect(500)
 
                 expect(response.body.error).to.equal('Error: could not find application')

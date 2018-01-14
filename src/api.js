@@ -127,7 +127,7 @@ const getPrivateApp = (handler = {
         res.send(applications)
     })
 
-    app.get('/admin/pre-sale/email/reminder/:privateId', async (req, res) => {
+    app.get('/admin/pre-sale/reminder/:privateId', async (req, res) => {
         const privateId = req.privateId
         try {
             await handler.sendReminder(privateId)
