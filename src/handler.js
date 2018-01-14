@@ -107,9 +107,9 @@ const getPrivateHandler = (db, emailSequence) => {
             if (!applicationFromDb.reminderDate) {
                 applicationFromDb.reminderDate = now
 
-                await db.update(privateId, applicationFromDb)
+                await emailSequence.sendSecondEmail(applicationFromDb.email, applicationFromDb)
 
-                emailSequence.sendSecondEmail(applicationFromDb.email, applicationFromDb)
+                await db.update(privateId, applicationFromDb)
             }
         },
 
@@ -127,9 +127,9 @@ const getPrivateHandler = (db, emailSequence) => {
             if (!applicationFromDb.acceptDate) {
                 applicationFromDb.acceptDate = now
 
-                await db.update(privateId, applicationFromDb)
+                await emailSequence.sendSuccessEmail(applicationFromDb.email, applicationFromDb)
 
-                emailSequence.sendSuccessEmail(applicationFromDb.email, applicationFromDb)
+                await db.update(privateId, applicationFromDb)
             }
         },
 
@@ -147,9 +147,9 @@ const getPrivateHandler = (db, emailSequence) => {
             if (!applicationFromDb.rejectDate) {
                 applicationFromDb.rejectDate = now
 
-                await db.update(privateId, applicationFromDb)
+                await emailSequence.sendFailureEmail(applicationFromDb.email, applicationFromDb)
 
-                emailSequence.sendFailureEmail(applicationFromDb.email, applicationFromDb)
+                await db.update(privateId, applicationFromDb)
             }
         },
     }
