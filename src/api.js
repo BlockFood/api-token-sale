@@ -105,7 +105,9 @@ const getPublicApp = (handler = {
 const getPrivateApp = (handler = {
     get: async () => {},
     getAll: async () => {},
-    sendReminder: async () => {}
+    sendReminder: async () => {},
+    accept: async () => {},
+    reject: async () => {},
 }, debug = false) => {
     const app = express()
 
@@ -129,6 +131,26 @@ const getPrivateApp = (handler = {
         const privateId = req.privateId
         try {
             await handler.sendReminder(privateId)
+            res.send({ ok: true })
+        } catch(e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
+    app.get('/admin/pre-sale/accept/:privateId', async (req, res) => {
+        const privateId = req.privateId
+        try {
+            await handler.accept(privateId)
+            res.send({ ok: true })
+        } catch(e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
+    app.get('/admin/pre-sale/reject/:privateId', async (req, res) => {
+        const privateId = req.privateId
+        try {
+            await handler.reject(privateId)
             res.send({ ok: true })
         } catch(e) {
             res.status(500).send({ error: e.toString() })

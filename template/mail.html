@@ -4,8 +4,35 @@
     <meta charset='UTF-8'>
     <title>{{title}}</title>
     <style>
-        body {
-            background: rgba(77, 30, 78, 0.15);
+        /* devanagari */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Poppins Regular'), local('Poppins-Regular'), url(https://fonts.gstatic.com/s/poppins/v5/gG8m82oGcrBJF727xHU04fY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+            unicode-range: U+0900-097F, U+1CD0-1CF6, U+1CF8-1CF9, U+200B-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FB;
+        }
+        /* latin-ext */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Poppins Regular'), local('Poppins-Regular'), url(https://fonts.gstatic.com/s/poppins/v5/F4YWuALHubF63LLQPw0rMfY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Poppins Regular'), local('Poppins-Regular'), url(https://fonts.gstatic.com/s/poppins/v5/HLBysyo0MQBO_7E-DWLwzg.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+        }
+
+        body, .body-like {
+            background: rgba(77, 30, 78, 0.05);
+            padding-top: 40px;
+            padding-bottom: 40px;
         }
 
         .container {
@@ -13,9 +40,9 @@
             background:  white;
             border:      1px solid black;
             padding:     20px;
-            margin:      20px auto;
+            margin:      20px 40px;
             font-size:   16px;
-            font-family: "Roboto", Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
         }
 
         .header {
@@ -90,69 +117,76 @@
             font-size:  75%;
 
         }
+
         img {
             max-width: 100%;
         }
 
         .call-to-action-container {
-            width: 100%;
-            text-align: center;
-            margin: 40px;
+            width:      100%;
+            margin:     40px;
         }
 
         .call-to-action {
-            color: white;
-            padding: 20px;
-            font-weight: bold;
-            text-decoration: none;
+            color:            white !important;
+            padding:          20px;
+            font-weight:      bold;
+            text-decoration:  none;
             background-color: #4b3f80;
-            border-radius: 4px;
+            border-radius:    4px;
+            position: relative;
+            left: 21px;
+        }
+
+        a {
+            color: black !important;
+            text-decoration: none !important;
         }
     </style>
 </head>
 <body>
 
-
-<div class='container'>
-    <div class='row header'>
-        <img alt='BlockFood' width='117' height='117'
-             style='display:block'
-             title='BlockFood'
-             src='https://blockfood.io/logo.png'>
-    </div>
-
-    <div class='row'>
-        <div class='col'>
-            <h1>{{{ title }}}</h1>
+<div class='body-like'>
+    <div class='container'>
+        <div class='row header'>
+            <img alt='BlockFood' width='117' height='117'
+                 style='display:block'
+                 title='BlockFood'
+                 src='https://blockfood.io/logo.png'>
         </div>
-    </div>
 
-    <div class='row'>
-        <div class='col'>
-            {{{ content }}}
+        <div class='row'>
+            <div class='col'>
+                <h1>{{{ title }}}</h1>
+            </div>
         </div>
-    </div>
 
-    {{#signature}}
-    <div class='row signature right'>
-        <div class='col-12'>
-            <p>
-                {{{ . }}}
-            </p>
+        <div class='row'>
+            <div class='col'>
+                {{{ content }}}
+            </div>
         </div>
-    </div>
-    {{/signature}}
 
-    <div class='row footer'>
-        <div class='col-6 left '>
-            © 2018 BlockFood - Open Sharing Economy foundation
+        {{#signature}}
+        <div class='row signature right'>
+            <div class='col-12'>
+                <p>
+                    {{{ . }}}
+                </p>
+            </div>
         </div>
-        <div class='col-6 right'>
-            Give the sharing economy back to the people
+        {{/signature}}
+
+        <div class='row footer'>
+            <div class='col-6 left '>
+                © 2018 BlockFood - Open Sharing Economy foundation
+            </div>
+            <div class='col-6 right'>
+                Give the sharing economy back to the people
+            </div>
         </div>
     </div>
 </div>
-
 
 </body>
 </html>

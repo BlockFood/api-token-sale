@@ -36,6 +36,8 @@ describe('handler', () => {
     const getEmailSender = () => ({
         sendFirstEmail: sinon.stub(),
         sendSecondEmail: sinon.stub(),
+        sendSuccessEmail: sinon.stub(),
+        sendFailureEmail: sinon.stub(),
     })
 
     describe('getPublicHandler', () => {
@@ -343,7 +345,7 @@ describe('handler', () => {
 
                 expect(emailSender.sendSecondEmail.calledOnce).to.equal(true)
             })
-            it('should update the application to add the reminder date', async() => {
+            it('should update the application to add the reminder date', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -372,7 +374,7 @@ describe('handler', () => {
                     expectedUpdatedApplication
                 ])
             })
-            it('should throw if application not find', async() => {
+            it('should throw if application not find', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -385,6 +387,146 @@ describe('handler', () => {
                     sendReminder(expectedPrivateId, now),
                     'sendReminder did not fail',
                     'Error: application not found'
+                )
+            })
+        })
+
+        describe('accept', () => {
+            it('should send an email', async () => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSuccessEmail.resolves()
+
+                const { accept } = getPrivateHandler(db, emailSender)
+
+                const now = new Date()
+
+                await accept(expectedPrivateId, now)
+
+                const emailSenderFirstCall = emailSender.sendSuccessEmail.getCall(0)
+                const [email, application] = emailSenderFirstCall.args
+                expect(email).to.equal('foo@bar')
+                expect(application).to.deep.equal({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    acceptDate: now
+                })
+            })
+            it('should send an email once', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                }).onCall(1).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    acceptDate: now
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSuccessEmail.resolves()
+
+                const { accept } = getPrivateHandler(db, emailSender)
+
+                await accept(expectedPrivateId, now)
+                await accept(expectedPrivateId, now)
+
+                expect(emailSender.sendSuccessEmail.calledOnce).to.equal(true)
+            })
+            it('should throw if application already got rejected', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    rejectDate: new Date()
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendSuccessEmail.resolves()
+
+                const { accept } = getPrivateHandler(db, emailSender)
+
+                await expectFailure(
+                    accept(expectedPrivateId, now),
+                    'accept did not throw even though application was rejected'
+                )
+            })
+        })
+
+        describe('reject', () => {
+            it('should send an email', async () => {
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendFailureEmail.resolves()
+
+                const { reject } = getPrivateHandler(db, emailSender)
+
+                const now = new Date()
+
+                await reject(expectedPrivateId, now)
+
+                const emailSenderFirstCall = emailSender.sendFailureEmail.getCall(0)
+                const [email, application] = emailSenderFirstCall.args
+                expect(email).to.equal('foo@bar')
+                expect(application).to.deep.equal({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    rejectDate: now
+                })
+            })
+            it('should send an email once', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId
+                }).onCall(1).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    rejectDate: now
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendFailureEmail.resolves()
+
+                const { reject } = getPrivateHandler(db, emailSender)
+
+                await reject(expectedPrivateId, now)
+                await reject(expectedPrivateId, now)
+
+                expect(emailSender.sendFailureEmail.calledOnce).to.equal(true)
+            })
+            it('should throw if application already got accepted', async() => {
+                const now = new Date()
+
+                const db = getDb()
+                db.get.withArgs(expectedPrivateId)
+                    .onCall(0).resolves({
+                    email: 'foo@bar',
+                    privateId: expectedPrivateId,
+                    acceptDate: new Date()
+                })
+                const emailSender = getEmailSender()
+                emailSender.sendFailureEmail.resolves()
+
+                const { reject } = getPrivateHandler(db, emailSender)
+
+                await expectFailure(
+                    reject(expectedPrivateId, now),
+                    'accept did not throw even though application was accepted'
                 )
             })
         })

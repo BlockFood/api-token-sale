@@ -48,15 +48,63 @@ describe('emailSequence', () => {
 
             expect(email).to.equal('foo@bar')
 
-            expect(sent.title).to.equal('BlockFood - One final step for pre-sale')
+            expect(sent.title).to.equal('BlockFood - There is still time to finalize your application')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
-            expect(sent.content).to.equal(`<p>Dear foo&lt;p&gt;bar&lt;/p&gt;,</p>
-                    <p>Thank you for submitting your information.</p>
-                    <p>If you did not already use the smart contract to finalize your application, follow this link:</p>
-                    <p class='call-to-action-container'><a href='url/to/pre-sale-form/privateId' class='call-to-action'>Finalize application</a></p>
-                    <p><i>Do not share this link with anyone. This is your private link.</i></p>
-                    <p>Once your application is finalized, the BlockFood team will review your information and accept your participation if everything is okay. You should receive a confirmation email in the next 24 hours.</p>
-                    <p>Thanks again for being awesome.</p>`)
+            expect(sent.content.length > 0).to.equal(true)
+        })
+    })
+
+    describe('sendSuccessEmail', () => {
+        it('calls send with some content', async () => {
+            const send = sinon.stub()
+            const getNextStepUrl = privateId => `url/to/pre-sale-form/${privateId}`
+
+            const application = {
+                email: 'foo@bar',
+                firstName: 'foo<p>bar</p>',
+                lastName: 'bar',
+                privateId: 'privateId'
+            }
+
+            await emailSequence(send, getNextStepUrl).sendSuccessEmail('foo@bar', application)
+
+            assert(send.calledOnce)
+
+            const sendCall = send.getCall(0)
+            const [email, sent] = sendCall.args
+
+            expect(email).to.equal('foo@bar')
+
+            expect(sent.title).to.equal('BlockFood - Your application has been accepted 🚀')
+            expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
+            expect(sent.content.length > 0).to.equal(true)
+        })
+    })
+
+    describe('sendFailureEmail', () => {
+        it('calls send with some content', async () => {
+            const send = sinon.stub()
+            const getNextStepUrl = privateId => `url/to/pre-sale-form/${privateId}`
+
+            const application = {
+                email: 'foo@bar',
+                firstName: 'foo<p>bar</p>',
+                lastName: 'bar',
+                privateId: 'privateId'
+            }
+
+            await emailSequence(send, getNextStepUrl).sendFailureEmail('foo@bar', application)
+
+            assert(send.calledOnce)
+
+            const sendCall = send.getCall(0)
+            const [email, sent] = sendCall.args
+
+            expect(email).to.equal('foo@bar')
+
+            expect(sent.title).to.equal('BlockFood - Your application has been declined')
+            expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
+            expect(sent.content.length > 0).to.equal(true)
         })
     })
 })

@@ -343,5 +343,65 @@ describe('api', () => {
                 expect(response.body.error).to.equal('Error: could not find application')
             })
         })
+
+        describe('GET /admin/pre-sale/accept/:privateId', () => {
+            it('should call handler.accept', async () => {
+                const handler = {
+                    accept: sinon.stub()
+                }
+
+                const app = getPrivateApp(handler)
+
+                await supertest(app)
+                    .get('/admin/pre-sale/accept/id42')
+                    .expect(200)
+
+                expect(handler.accept.calledWith('id42'))
+            })
+            it('should throw if handler throws', async () => {
+                const handler = {
+                    accept: sinon.stub()
+                }
+                handler.accept.rejects(new Error('could not find application'))
+
+                const app = getPrivateApp(handler)
+
+                const response = await supertest(app)
+                    .get('/admin/pre-sale/accept/id42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: could not find application')
+            })
+        })
+
+        describe('GET /admin/pre-sale/reject/:privateId', () => {
+            it('should call handler.reject', async () => {
+                const handler = {
+                    reject: sinon.stub()
+                }
+
+                const app = getPrivateApp(handler)
+
+                await supertest(app)
+                    .get('/admin/pre-sale/reject/id42')
+                    .expect(200)
+
+                expect(handler.reject.calledWith('id42'))
+            })
+            it('should throw if handler throws', async () => {
+                const handler = {
+                    reject: sinon.stub()
+                }
+                handler.reject.rejects(new Error('could not find application'))
+
+                const app = getPrivateApp(handler)
+
+                const response = await supertest(app)
+                    .get('/admin/pre-sale/reject/id42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: could not find application')
+            })
+        })
     })
 })

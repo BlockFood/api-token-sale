@@ -111,7 +111,47 @@ const getPrivateHandler = (db, emailSequence) => {
 
                 emailSequence.sendSecondEmail(applicationFromDb.email, applicationFromDb)
             }
-        }
+        },
+
+        accept: async (privateId, now = new Date()) => {
+            const applicationFromDb = await db.get(privateId)
+
+            if (!applicationFromDb) {
+                throw new Error('application not found')
+            }
+
+            if (applicationFromDb.rejectDate) {
+                throw new Error('application already rejected')
+            }
+
+            if (!applicationFromDb.acceptDate) {
+                applicationFromDb.acceptDate = now
+
+                await db.update(privateId, applicationFromDb)
+
+                emailSequence.sendSuccessEmail(applicationFromDb.email, applicationFromDb)
+            }
+        },
+
+        reject: async (privateId, now = new Date()) => {
+            const applicationFromDb = await db.get(privateId)
+
+            if (!applicationFromDb) {
+                throw new Error('application not found')
+            }
+
+            if (applicationFromDb.acceptDate) {
+                throw new Error('application already rejected')
+            }
+
+            if (!applicationFromDb.rejectDate) {
+                applicationFromDb.rejectDate = now
+
+                await db.update(privateId, applicationFromDb)
+
+                emailSequence.sendFailureEmail(applicationFromDb.email, applicationFromDb)
+            }
+        },
     }
 }
 
