@@ -138,7 +138,7 @@ const getPrivateApp = (handler = {
     })
 
     app.get('/admin/pre-sale/accept/:privateId', async (req, res) => {
-        const privateId = req.privateId
+        const privateId = req.params.privateId
         try {
             await handler.accept(privateId)
             res.send({ ok: true })
@@ -148,7 +148,7 @@ const getPrivateApp = (handler = {
     })
 
     app.get('/admin/pre-sale/reject/:privateId', async (req, res) => {
-        const privateId = req.privateId
+        const privateId = req.params.privateId
         try {
             await handler.reject(privateId)
             res.send({ ok: true })
