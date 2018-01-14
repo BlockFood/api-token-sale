@@ -23,7 +23,10 @@ const start = async() => {
                     emailSender(
                         nodemailer.createTransport(emailConfig),
                         template
-                    ).send
+                    ).send,
+                    isDebug ?
+                        (privateId) => `http://localhost:8080/blockfood.io/pre-sale#privateId=${privateId}` :
+                        (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
                 )
             ),
             isDebug
