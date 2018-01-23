@@ -16,7 +16,8 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'lastName',
         'country',
         'txHashes',
-        'isLocked'
+        'isLocked',
+        'sponsor'
     ]
 
     const validateApplicationForUpdate = (application) =>
@@ -35,7 +36,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
     return {
         validateApplicationForUpdate,
         getMissingFieldsForUpdate,
-        add: async (email, now = new Date()) => {
+        add: async (email, sponsor, now = new Date()) => {
             if (!emailValidator.validate(email)) {
                 throw new Error('invalid email')
             }
@@ -46,6 +47,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 email,
                 privateId,
                 publicId,
+                sponsor,
                 creation: now
             })
 

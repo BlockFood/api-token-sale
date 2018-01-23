@@ -57,7 +57,7 @@ describe('handler', () => {
 
                 const now = new Date()
 
-                await add('foo@bar.baz', now)
+                await add('foo@bar.baz', 'sponsor_id', now)
 
                 const dbFirstCall = db.add.getCall(0)
                 const [newApplication] = dbFirstCall.args
@@ -65,6 +65,7 @@ describe('handler', () => {
                     email: 'foo@bar.baz',
                     privateId: expectedPrivateId,
                     publicId: expectedPublicId,
+                    sponsor: 'sponsor_id',
                     creation: now
                 })
 
@@ -171,6 +172,7 @@ describe('handler', () => {
                     firstName: 'foo',
                     lastName: 'foo',
                     country: 'foo',
+                    sponsor: 'sponsor_id',
                     txHashes: [],
                     isLocked: true,
                     createdAt: new Date()
@@ -187,6 +189,7 @@ describe('handler', () => {
                     firstName: 'foo',
                     lastName: 'foo',
                     country: 'foo',
+                    sponsor: 'sponsor_id',
                     txHashes: [],
                     isLocked: true,
                 })

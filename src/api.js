@@ -17,9 +17,10 @@ const getPublicApp = (handler = {
 
     app.get('/pre-sale/new', async (req, res) => {
         const email = req.query.email
+        const sponsor = req.query.sponsor || ''
 
         try {
-            await handler.add(email)
+            await handler.add(email, sponsor)
             res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })

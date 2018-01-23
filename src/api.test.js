@@ -26,7 +26,7 @@ describe('api', () => {
                 const app = getPublicApp()
 
                 const response = await supertest(app)
-                    .get('/pre-sale/new?email=test@foo.bar')
+                    .get('/pre-sale/new?email=test@foo.bar&sponsor=sponsor_id')
                     .expect(200)
 
                 expect(response.body).to.deep.equal({ ok: true })
@@ -38,10 +38,10 @@ describe('api', () => {
                 const app = getPublicApp(handler)
 
                 await supertest(app)
-                    .get('/pre-sale/new?email=test@foo.bar')
+                    .get('/pre-sale/new?email=test@foo.bar&sponsor=sponsor_id')
                     .expect(200)
 
-                assert(handler.add.calledWith('test@foo.bar'))
+                assert(handler.add.calledWith('test@foo.bar', 'sponsor_id'))
             })
             it('should throw if handler throws', async () => {
                 const handler = {
