@@ -9,12 +9,15 @@ const db = require('./src/db')
 const idGenerator = require('./src/idGenerator')
 const emailSequence = require('./src/emailSequence')
 const emailSender = require('./src/emailSender')
+const emailRandomTransport = require('./src/emailRandomTransport')
 
 const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 'utf-8')
 
 const emailConfig = require('./email-config')
 
 const isDebug = process.argv[2] === '--debug'
+
+
 
 const start = async () => {
     api.start(
@@ -24,7 +27,7 @@ const start = async () => {
                 idGenerator,
                 emailSequence(
                     emailSender(
-                        nodemailer.createTransport(emailConfig),
+                        emailRandomTransport(emailConfig, nodemailer),
                         template
                     ).send,
                     isDebug ?

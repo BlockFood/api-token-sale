@@ -1,8 +1,8 @@
 module.exports = {
     host: '',
     port: 0,
-    auth: {
+    auth: [{
         user: '',
         pass: ''
-    }
+    }]
 }
