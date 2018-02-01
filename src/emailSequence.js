@@ -51,7 +51,7 @@ Check out our explanation of the referral program: <a href="https://medium.com/b
 <p class='call-to-action-container'><a href='${getNextStepUrl(application.privateId)}' class='call-to-action'>Finalize application</a></p>
                     <p><i>Do not share this link with anyone. This is your private link.</i></p>
                     <p></p>
-                    <p>We need your help! There is still time until the end of the pre-sale and our community is still growing. We need your help getting our message out there!<ul>
+                    <p>There is still time until the end of the pre-sale and our community is still growing. We need your help getting our message out there!<ul>
 <li><a href="mailto:?&subject=I've participated to the BlockFood Pre-Sale&body=Hey%20there,%0A%0AI%20just%20want%20to%20share%20with%20you%20this%20project%20I%20like%0A%0Ahttps%3A//blockfood.io" target='_blank'>Send Email</a></li>
 <li><a href="https://twitter.com/home?status=I've%20participated%20to%20the%20BlockFood%20Pre-Sale!%20Check%20out%20their%20awesome%20project%0A%0Ahttps%3A//blockfood.io" target='_blank'>Share on Twitter</a></li>
 <li><a href='https://t.me/share/url?url=https://blockfood.io' target='_blank'>Share on Telegram</a></li>
@@ -60,6 +60,7 @@ Check out our explanation of the referral program: <a href="https://medium.com/b
 <li><a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//blockfood.io&title=BlockFood%20-%20World's%20first%20decentralized%20food%20ordering%20platform&summary=I've%20participated%20to%20the%20BlockFood%20Pre-Sale!%20Check%20out%20their%20awesome%20project&source=" target='_blank'>Share on LinkedIn</a></li>
 <li><a href='https://pinterest.com/pin/create/button/?url=https%3A//blockfood.io&media=https%3A//blockfood.io/logo.png&description=' target='_blank'>Pin on Pinterest</a></li>
 </ul></p>
+                    <h3>Your referral link</h3>
 <p>
                     Here is your own personal referral link:<ul><li>
 <a href='https://blockfood.io/pre-sale#ref=${application.publicId}' target='_blank'>https://blockfood.io/pre-sale#ref=${application.publicId}</a>
@@ -93,6 +94,20 @@ Check out our explanation of the referral program: <a href="https://medium.com/b
 <li><a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//blockfood.io&title=BlockFood%20-%20World's%20first%20decentralized%20food%20ordering%20platform&summary=I've%20participated%20to%20the%20BlockFood%20Pre-Sale!%20Check%20out%20their%20awesome%20project&source=" target='_blank'>Share on LinkedIn</a></li>
 <li><a href='https://pinterest.com/pin/create/button/?url=https%3A//blockfood.io&media=https%3A//blockfood.io/logo.png&description=' target='_blank'>Pin on Pinterest</a></li>
 </ul></p>
+
+                    <h3>Your referral link</h3>
+                    <p>We created a referral program! Read this guide to understand its mechanism: <a href="https://medium.com/blockfood/blockfood-pre-sale-referral-program-93e9b87e94c8">BlockFood Pre-Sale Referral Program (medium)</a>
+</p>
+<p>
+                    Here is your own personal referral link:<ul><li>
+<a href='https://blockfood.io/pre-sale#ref=${application.publicId}' target='_blank'>https://blockfood.io/pre-sale#ref=${application.publicId}</a>
+</li></ul><br>You can share this link either by copy/pasting the link above, or by using the following links:
+<ul>
+<li><a href='https://www.facebook.com/sharer/sharer.php?u=https%3A//blockfood.io/pre-sale%23ref=${application.publicId}' target='_blank'>Share on Facebook</a></li>
+<li><a href='https://twitter.com/home?status=https%3A//blockfood.io/pre-sale%23ref=${application.publicId}' target='_blank'>Share on Twitter</a></li>
+<li><a href='https://t.me/share/url?url=https://blockfood.io/pre-sale%23ref=${application.publicId}' target='_blank'>Share on Telegram</a></li>
+</ul>
+</p>
 <p>Thank you very much for your help. You are awesome!</p>
 <p>Let's build a fairer future for the sharing economy together.</p>
 `,

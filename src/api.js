@@ -32,7 +32,7 @@ const getPublicApp = (handler = {
 
         const form = new multiparty.Form({ autoFiles: true })
 
-        form.parse(req, async (err, fields, files) => {
+        form.parse(req, async (err, fields) => {
             if (err) {
                 console.log('Unexpected error', err)
                 res.send(500)
