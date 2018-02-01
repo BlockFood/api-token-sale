@@ -8,6 +8,8 @@ const handler = require('./src/handler')
 const db = require('./src/db')
 const emailSequence = require('./src/emailSequence')
 const emailSender = require('./src/emailSender')
+const emailRandomTransport = require('./src/emailRandomTransport')
+
 
 const template = fs.readFileSync(path.join(__dirname, 'template', 'mail.html'), 'utf-8')
 const emailConfig = require('./email-config')
@@ -21,7 +23,7 @@ const start = async() => {
                 await db('mongodb://127.0.0.1:27017/token-sale'),
                 emailSequence(
                     emailSender(
-                        nodemailer.createTransport(emailConfig),
+                        emailRandomTransport(emailConfig, nodemailer),
                         template
                     ).send,
                     isDebug ?
