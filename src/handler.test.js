@@ -70,9 +70,10 @@ describe('handler', () => {
                 })
 
                 const emailSenderFirstCall = emailSender.sendFirstEmail.getCall(0)
-                const [email, privateId] = emailSenderFirstCall.args
+                const [email, privateId, publicId] = emailSenderFirstCall.args
                 expect(email).to.equal('foo@bar.baz')
                 expect(privateId).to.equal(expectedPrivateId)
+                expect(publicId).to.equal(expectedPublicId)
             })
             it('should throw if email is invalid', async () => {
                 const { add } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())

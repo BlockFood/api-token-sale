@@ -51,7 +51,7 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 creation: now
             })
 
-            await emailSequence.sendFirstEmail(email, privateId)
+            await emailSequence.sendFirstEmail(email, privateId, publicId)
         },
         update: async (privateId, application, validate = true, now = new Date()) => {
             if (application.isLocked) {
