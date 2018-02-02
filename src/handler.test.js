@@ -1,7 +1,7 @@
-const { expect, assert } = require('chai')
+const {expect, assert} = require('chai')
 const sinon = require('sinon')
 
-const { getPublicHandler, getPrivateHandler } = require('./handler')
+const {getPublicHandler, getPrivateHandler} = require('./handler')
 
 const expectFailure = async (promise, errorMessage, expectedError) => {
     let hasFailed
@@ -53,7 +53,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendFirstEmail.resolves()
 
-                const { add } = getPublicHandler(db, idGenerator, emailSender)
+                const {add} = getPublicHandler(db, idGenerator, emailSender)
 
                 const now = new Date()
 
@@ -76,7 +76,7 @@ describe('handler', () => {
                 expect(publicId).to.equal(expectedPublicId)
             })
             it('should throw if email is invalid', async () => {
-                const { add } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
+                const {add} = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     add('invalid-email'),
@@ -87,7 +87,7 @@ describe('handler', () => {
         })
         describe('getMissingFieldsForUpdate', () => {
             it('should return the list of missing fields', () => {
-                const { getMissingFieldsForUpdate } = getPublicHandler()
+                const {getMissingFieldsForUpdate} = getPublicHandler()
 
                 const missingFields = getMissingFieldsForUpdate({})
                 expect(missingFields).to.deep.equal([
@@ -115,7 +115,7 @@ describe('handler', () => {
                     lastUpdate: now
                 }, validApplication)
 
-                const { update } = getPublicHandler(db, getIdGenerator(), getEmailSender())
+                const {update} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await update(expectedPrivateId, validApplication, true, now)
 
@@ -131,7 +131,7 @@ describe('handler', () => {
                     // missing fields
                 }
 
-                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
+                const {update} = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     update(expectedPrivateId, invalidApplication),
@@ -144,7 +144,7 @@ describe('handler', () => {
                     txHashes: ['txHash']
                 }
 
-                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
+                const {update} = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await update(expectedPrivateId, invalidApplication, false)
             })
@@ -154,7 +154,7 @@ describe('handler', () => {
                     // missing fields
                 }
 
-                const { update } = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
+                const {update} = getPublicHandler(getDb(), getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     update(expectedPrivateId, invalidApplication),
@@ -179,7 +179,7 @@ describe('handler', () => {
                     createdAt: new Date()
                 })
 
-                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender())
+                const {get} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 const returnedApplication = await get(expectedPrivateId)
 
@@ -199,7 +199,7 @@ describe('handler', () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
 
-                const { get } = getPublicHandler(db, getIdGenerator(), getEmailSender())
+                const {get} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     get(expectedPrivateId),
@@ -215,7 +215,7 @@ describe('handler', () => {
                 db.get.withArgs(expectedPrivateId).resolves({
                     privateId: expectedPrivateId
                 })
-                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender())
+                const {lock} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 const now = new Date()
 
@@ -261,7 +261,7 @@ describe('handler', () => {
                 const db = getDb()
                 db.get.withArgs(expectedPrivateId).resolves(null)
 
-                const { lock } = getPublicHandler(db, getIdGenerator(), getEmailSender())
+                const {lock} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
                 await expectFailure(
                     lock(expectedPrivateId),
@@ -270,16 +270,41 @@ describe('handler', () => {
                 )
             })
         })
+
+        describe('getReferrents', () => {
+            it('should return the referrents corresponding to the public id', async () => {
+                const db = getDb()
+                db.getAll.resolves([
+                    {sponsor: 'A'}, {sponsor: 'B'}, {sponsor: 'C'}, {sponsor: 'A'}
+                ])
+
+                const {getReferrents} = getPublicHandler(db, getIdGenerator(), getEmailSender())
+
+                const referrents = await getReferrents('A')
+
+                expect(referrents).to.deep.equal([{sponsor: 'A'}, {sponsor: 'A'}])
+            })
+            it('should return an empty array if no applications match', async () => {
+                const db = getDb()
+                db.getAll.resolves([])
+
+                const {getReferrents} = getPublicHandler(db, getIdGenerator(), getEmailSender())
+
+                const referrents = await getReferrents('B')
+
+                expect(referrents).to.deep.equal([])
+            })
+        })
     })
 
     describe('getPrivateHandler', () => {
         describe('get', () => {
             it('should returned an unfiltered version from the db', async () => {
                 const db = getDb()
-                const whatever = { whatevs: true }
+                const whatever = {whatevs: true}
                 db.getWithPublicId.withArgs(expectedPublicId).resolves(whatever)
 
-                const { get } = getPrivateHandler(db)
+                const {get} = getPrivateHandler(db)
 
                 const returnedApplication = await get(expectedPublicId)
 
@@ -290,10 +315,10 @@ describe('handler', () => {
         describe('getAll', () => {
             it('should return the list of all applications', async () => {
                 const db = getDb()
-                const whatever = { whatevs: true }
+                const whatever = {whatevs: true}
                 db.getAll.resolves(whatever)
 
-                const { getAll } = getPrivateHandler(db)
+                const {getAll} = getPrivateHandler(db)
 
                 const returnedApplications = await getAll()
 
@@ -311,7 +336,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSecondEmail.resolves()
 
-                const { sendReminder } = getPrivateHandler(db, emailSender)
+                const {sendReminder} = getPrivateHandler(db, emailSender)
 
                 const now = new Date()
 
@@ -342,7 +367,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSecondEmail.resolves()
 
-                const { sendReminder } = getPrivateHandler(db, emailSender)
+                const {sendReminder} = getPrivateHandler(db, emailSender)
 
                 await sendReminder(expectedPrivateId, now)
                 await sendReminder(expectedPrivateId, now)
@@ -369,7 +394,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSecondEmail.resolves()
 
-                const { sendReminder } = getPrivateHandler(db, emailSender)
+                const {sendReminder} = getPrivateHandler(db, emailSender)
 
                 await sendReminder(expectedPrivateId, now)
 
@@ -385,7 +410,7 @@ describe('handler', () => {
                 db.get.withArgs(expectedPrivateId)
                     .resolves(null)
 
-                const { sendReminder } = getPrivateHandler(db)
+                const {sendReminder} = getPrivateHandler(db)
 
                 await expectFailure(
                     sendReminder(expectedPrivateId, now),
@@ -405,7 +430,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSuccessEmail.resolves()
 
-                const { accept } = getPrivateHandler(db, emailSender)
+                const {accept} = getPrivateHandler(db, emailSender)
 
                 const now = new Date()
 
@@ -420,7 +445,7 @@ describe('handler', () => {
                     acceptDate: now
                 })
             })
-            it('should send an email once', async() => {
+            it('should send an email once', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -436,14 +461,14 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSuccessEmail.resolves()
 
-                const { accept } = getPrivateHandler(db, emailSender)
+                const {accept} = getPrivateHandler(db, emailSender)
 
                 await accept(expectedPrivateId, now)
                 await accept(expectedPrivateId, now)
 
                 expect(emailSender.sendSuccessEmail.calledOnce).to.equal(true)
             })
-            it('should throw if application already got rejected', async() => {
+            it('should throw if application already got rejected', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -456,7 +481,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendSuccessEmail.resolves()
 
-                const { accept } = getPrivateHandler(db, emailSender)
+                const {accept} = getPrivateHandler(db, emailSender)
 
                 await expectFailure(
                     accept(expectedPrivateId, now),
@@ -475,7 +500,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendFailureEmail.resolves()
 
-                const { reject } = getPrivateHandler(db, emailSender)
+                const {reject} = getPrivateHandler(db, emailSender)
 
                 const now = new Date()
 
@@ -490,7 +515,7 @@ describe('handler', () => {
                     rejectDate: now
                 })
             })
-            it('should send an email once', async() => {
+            it('should send an email once', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -506,14 +531,14 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendFailureEmail.resolves()
 
-                const { reject } = getPrivateHandler(db, emailSender)
+                const {reject} = getPrivateHandler(db, emailSender)
 
                 await reject(expectedPrivateId, now)
                 await reject(expectedPrivateId, now)
 
                 expect(emailSender.sendFailureEmail.calledOnce).to.equal(true)
             })
-            it('should throw if application already got accepted', async() => {
+            it('should throw if application already got accepted', async () => {
                 const now = new Date()
 
                 const db = getDb()
@@ -526,7 +551,7 @@ describe('handler', () => {
                 const emailSender = getEmailSender()
                 emailSender.sendFailureEmail.resolves()
 
-                const { reject } = getPrivateHandler(db, emailSender)
+                const {reject} = getPrivateHandler(db, emailSender)
 
                 await expectFailure(
                     reject(expectedPrivateId, now),

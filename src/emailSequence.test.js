@@ -18,7 +18,7 @@ describe('emailSequence', () => {
 
             expect(email).to.equal('foo@bar')
 
-            expect(sent.title).to.equal('BlockFood - Next step for pre-sale')
+            expect(sent.title).to.equal('BlockFood - Next Step for Pre-Sale')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
             expect(sent.content.length > 0).to.equal(true)
         })

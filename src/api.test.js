@@ -275,6 +275,38 @@ describe('api', () => {
                 expect(response.body.address).to.equal('0x45B213dac7E8BD71Ffe8E09A7471dF8728155342')
             })
         })
+
+        describe('GET /pre-sale/referrents/:publicId', async () => {
+            it('should return whatever handlers.referrents returns', async () => {
+                const handler = {
+                    getReferrents: sinon.stub()
+                }
+                const whatever = { whatevs: true }
+                handler.getReferrents.withArgs('ID42').resolves(whatever)
+
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .get('/pre-sale/referrents/ID42')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+            it('should throw if handlers.get throws', async () => {
+                const handler = {
+                    getReferrents: sinon.stub()
+                }
+                handler.getReferrents.rejects(new Error('application not found'))
+
+                const app = getPublicApp(handler)
+
+                const response = await supertest(app)
+                    .get('/pre-sale/referrents/ID42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: application not found')
+            })
+        })
     })
 
     describe('getPrivateApp', () => {

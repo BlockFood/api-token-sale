@@ -6,6 +6,7 @@ const getPublicApp = (handler = {
     add: () => {},
     update: () => {},
     get: async () => {},
+    getReferrents: async () => {},
 }, debug = false) => {
     const app = express()
 
@@ -98,6 +99,15 @@ const getPublicApp = (handler = {
             return
         }
         res.send({ address: '0x762C128A5BAC6553e66fb2c07bEE864576966C26' })
+    })
+
+    app.get('/pre-sale/referrents/:publicId', async (req, res) => {
+        try {
+            const application = await handler.getReferrents(req.params.publicId)
+            res.send(application)
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
     })
 
     return app

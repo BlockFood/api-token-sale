@@ -16,8 +16,6 @@ module.exports = (emailConfig, nodemailer) => {
         sendMail: (mail) => {
             const randomTransporter = _.sample(transporters)
 
-            console.log('selectedRandomTransporter', randomTransporter.options.auth.user)
-
             return randomTransporter.sendMail(mail)
         }
     }

@@ -3,7 +3,7 @@ const sinon = require('sinon')
 
 const emailRandomTransport = require('./emailRandomTransport')
 
-describe.only('emailRandomTransport', () => {
+describe('emailRandomTransport', () => {
     it('should randomly select a transporter', async () => {
         const emailConfig = {
             host: 'host',
@@ -18,7 +18,6 @@ describe.only('emailRandomTransport', () => {
             createTransport: (emailConf) => {
                 return {
                     sendMail: (what) => {
-                        console.log(emailConf.auth.user, '..stub called with', what)
                     }
                 }
             }
