@@ -335,6 +335,86 @@ describe('api', () => {
                 expect(response.body.error).to.equal('Error: Invalid application, missing fields : a,b,c')
             })
         })
+
+
+        describe('POST /air-drop/edit/:privateId', () => {
+            it('should call handlers.update with valid parameters', async () => {
+                const handler = {
+                    get: sinon.stub(),
+                    update: sinon.stub()
+                }
+                handler.get.withArgs('ID42').resolves({ email: 'foo@bar' })
+                const expectedAirDropApplication = {
+                    ethAddress: '0x422222',
+                }
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .post('/air-drop/edit/ID42')
+                    .field('ethAddress', '0x422222')
+                    .expect(200)
+
+                const [firstCall] = handler.update.getCalls()
+
+                const [id, application] = firstCall.args
+                expect(id).to.equal('ID42')
+                expect(application).to.deep.equal(expectedAirDropApplication)
+
+                expect(response.body).to.deep.equal({ ok: true })
+            })
+
+            it('should throw if handler.update throws', async () => {
+                const handler = {
+                    get: sinon.stub(),
+                    update: sinon.stub()
+                }
+                handler.get.resolves({ email: 'foo@bar' })
+                handler.update.rejects(new Error('missing fields'))
+
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .post('/air-drop/edit/ID42')
+                    .field('nationality', 'what')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: missing fields')
+            })
+        })
+
+
+        describe('GET /air-drop/review/:privateId', () => {
+            it('should return whatever handlers.get returns', async () => {
+                const handler = {
+                    get: sinon.stub()
+                }
+                const whatever = { whatevs: true }
+                handler.get.withArgs('ID42').resolves(whatever)
+
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/air-drop/review/ID42')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+            it('should throw if handlers.get throws', async () => {
+                const handler = {
+                    get: sinon.stub()
+                }
+                handler.get.rejects(new Error('application not found'))
+
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/air-drop/review/ID42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: application not found')
+            })
+        })
+
     })
 
     describe('getPrivateApp', () => {

@@ -127,6 +127,40 @@ const getPublicApp = (preSaleHandler = {
         }
     })
 
+    app.post('/air-drop/edit/:privateId', async (req, res) => {
+        const privateId = req.params.privateId
+
+        const form = new multiparty.Form({ autoFiles: true })
+
+        form.parse(req, async (err, fields) => {
+            if (err) {
+                console.log('Unexpected error', err)
+                res.send(500)
+                return
+            }
+
+            try {
+                const application = Object.keys(fields).reduce((application, key) => {
+                    application[key] = fields[key][0]
+                    return application
+                }, {})
+                await airDropHandler.update(privateId, application)
+                res.send({ ok: true })
+            } catch (e) {
+                res.status(500).send({ error: e.toString() })
+            }
+        })
+    })
+
+    app.get('/air-drop/review/:privateId', async (req, res) => {
+        try {
+            const application = await airDropHandler.get(req.params.privateId)
+            res.send(application)
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
     return app
 }
 
