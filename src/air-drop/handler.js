@@ -3,20 +3,15 @@ const emailValidator = require('email-validator')
 const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
 
     const mandatoryFields = [
-        'firstName',
-        'lastName',
-        'country',
+        'ethAddress',
+        'sponsor'
     ]
 
     const exportedFields = [
         'publicId',
         'privateId',
+        'ethAddress',
         'email',
-        'firstName',
-        'lastName',
-        'country',
-        'txHashes',
-        'isLocked',
         'sponsor'
     ]
 
@@ -77,20 +72,6 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 application[field] = applicationFromDB[field]
                 return application
             }, {})
-        },
-        lock: async (privateId, now = new Date()) => {
-            const applicationFromDB = await db.get(privateId)
-
-            if (!applicationFromDB) {
-                throw new Error('application not found')
-            }
-
-            const lockedApplication = Object.assign({}, applicationFromDB)
-
-            lockedApplication.isLocked = true
-            lockedApplication.lockDate = now
-
-            await db.update(privateId, lockedApplication)
         },
         getReferrents: async (publicId) => {
             const applications = await db.getAll()

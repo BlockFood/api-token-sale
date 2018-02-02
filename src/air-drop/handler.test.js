@@ -17,7 +17,7 @@ const expectFailure = async (promise, errorMessage, expectedError) => {
     assert(hasFailed, errorMessage)
 }
 
-describe('handler', () => {
+describe.skip('airDropHandler', () => {
     const expectedPrivateId = 'privateId'
     const expectedPublicId = 'publicId'
 

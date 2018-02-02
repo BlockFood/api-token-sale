@@ -161,6 +161,15 @@ const getPublicApp = (preSaleHandler = {
         }
     })
 
+    app.get('/air-drop/referrents/:publicId', async (req, res) => {
+        try {
+            const application = await airDropHandler.getReferrents(req.params.publicId)
+            res.send(application)
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
     return app
 }
 

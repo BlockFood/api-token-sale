@@ -415,6 +415,39 @@ describe('api', () => {
             })
         })
 
+
+        describe('GET /air-drop/referrents/:publicId', async () => {
+            it('should return whatever handlers.referrents returns', async () => {
+                const handler = {
+                    getReferrents: sinon.stub()
+                }
+                const whatever = { whatevs: true }
+                handler.getReferrents.withArgs('ID42').resolves(whatever)
+
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/air-drop/referrents/ID42')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+            it('should throw if handlers.get throws', async () => {
+                const handler = {
+                    getReferrents: sinon.stub()
+                }
+                handler.getReferrents.rejects(new Error('application not found'))
+
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/air-drop/referrents/ID42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: application not found')
+            })
+        })
+
     })
 
     describe('getPrivateApp', () => {
