@@ -266,7 +266,7 @@ describe('api', () => {
                 expect(response.body.address).to.equal('0x762C128A5BAC6553e66fb2c07bEE864576966C26')
             })
             it('should return the debug value', async () => {
-                const app = getPublicApp({}, true)
+                const app = getPublicApp({},{}, true)
 
                 const response = await supertest(app)
                     .get('/pre-sale/smart-contract')
@@ -305,6 +305,34 @@ describe('api', () => {
                     .expect(500)
 
                 expect(response.body.error).to.equal('Error: application not found')
+            })
+        })
+
+        describe('GET /air-drop/new', () => {
+            it('should call handlers.add', async () => {
+                const handler = {
+                    add: sinon.stub()
+                }
+                const app = getPublicApp(undefined, handler)
+
+                await supertest(app)
+                    .get('/air-drop/new?email=test@foo.bar&sponsor=sponsor_id')
+                    .expect(200)
+
+                assert(handler.add.calledWith('test@foo.bar', 'sponsor_id'))
+            })
+            it('should throw if handler throws', async () => {
+                const handler = {
+                    add: sinon.stub()
+                }
+                handler.add.rejects(new Error('Invalid application, missing fields : a,b,c'))
+                const app = getPublicApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/air-drop/new?email=invalid')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: Invalid application, missing fields : a,b,c')
             })
         })
     })

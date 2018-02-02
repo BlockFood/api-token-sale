@@ -4,9 +4,9 @@ const path = require('path')
 const nodemailer = require('nodemailer')
 
 const api = require('./src/api')
-const handler = require('./src/handler')
+const handler = require('./src/pre-sale/handler')
 const db = require('./src/db')
-const emailSequence = require('./src/emailSequence')
+const emailSequence = require('./src/pre-sale/emailSequence')
 const emailSender = require('./src/emailSender')
 const emailRandomTransport = require('./src/emailRandomTransport')
 

@@ -2,11 +2,16 @@ const express = require('express')
 const multiparty = require('multiparty')
 const emailValidator = require('email-validator')
 
-const getPublicApp = (handler = {
-    add: () => {},
-    update: () => {},
+const getPublicApp = (preSaleHandler = {
+    add: async () => {},
+    update: async () => {},
     get: async () => {},
     getReferrents: async () => {},
+}, airDropHandler = {
+    add: async () => {},
+    update: async () => {},
+    get: async () => {},
+    getReferrents: async () => {}
 }, debug = false) => {
     const app = express()
 
@@ -21,7 +26,7 @@ const getPublicApp = (handler = {
         const sponsor = req.query.sponsor || ''
 
         try {
-            await handler.add(email, sponsor)
+            await preSaleHandler.add(email, sponsor)
             res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
@@ -45,7 +50,7 @@ const getPublicApp = (handler = {
                     application[key] = fields[key][0]
                     return application
                 }, {})
-                await handler.update(privateId, application)
+                await preSaleHandler.update(privateId, application)
                 res.send({ ok: true })
             } catch (e) {
                 res.status(500).send({ error: e.toString() })
@@ -57,7 +62,7 @@ const getPublicApp = (handler = {
         const privateId = req.params.privateId
 
         try {
-            await handler.lock(privateId)
+            await preSaleHandler.lock(privateId)
             res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
@@ -74,10 +79,10 @@ const getPublicApp = (handler = {
         }
 
         try {
-            const application = await handler.get(privateId)
+            const application = await preSaleHandler.get(privateId)
             const txHashes = application.txHashes || []
             txHashes.push(txHash)
-            await handler.update(privateId, { txHashes }, false)
+            await preSaleHandler.update(privateId, { txHashes }, false)
             res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
@@ -86,7 +91,7 @@ const getPublicApp = (handler = {
 
     app.get('/pre-sale/review/:privateId', async (req, res) => {
         try {
-            const application = await handler.get(req.params.privateId)
+            const application = await preSaleHandler.get(req.params.privateId)
             res.send(application)
         } catch (e) {
             res.status(500).send({ error: e.toString() })
@@ -103,8 +108,20 @@ const getPublicApp = (handler = {
 
     app.get('/pre-sale/referrents/:publicId', async (req, res) => {
         try {
-            const application = await handler.getReferrents(req.params.publicId)
+            const application = await preSaleHandler.getReferrents(req.params.publicId)
             res.send(application)
+        } catch (e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
+    app.get('/air-drop/new', async (req, res) => {
+        const email = req.query.email
+        const sponsor = req.query.sponsor || ''
+
+        try {
+            await airDropHandler.add(email, sponsor)
+            res.send({ ok: true })
         } catch (e) {
             res.status(500).send({ error: e.toString() })
         }
@@ -113,7 +130,7 @@ const getPublicApp = (handler = {
     return app
 }
 
-const getPrivateApp = (handler = {
+const getPrivateApp = (preSaleHandler = {
     get: async () => {},
     getAll: async () => {},
     sendReminder: async () => {},
@@ -129,19 +146,19 @@ const getPrivateApp = (handler = {
     })
 
     app.get('/admin/pre-sale/review/:publicId', async (req, res) => {
-        const application = await handler.get(req.params.publicId)
+        const application = await preSaleHandler.get(req.params.publicId)
         res.send(application)
     })
 
     app.get('/admin/pre-sale/review', async (req, res) => {
-        const applications = await handler.getAll()
+        const applications = await preSaleHandler.getAll()
         res.send(applications)
     })
 
     app.get('/admin/pre-sale/reminder/:privateId', async (req, res) => {
         const privateId = req.params.privateId
         try {
-            await handler.sendReminder(privateId)
+            await preSaleHandler.sendReminder(privateId)
             res.send({ ok: true })
         } catch(e) {
             res.status(500).send({ error: e.toString() })
@@ -151,7 +168,7 @@ const getPrivateApp = (handler = {
     app.get('/admin/pre-sale/accept/:privateId', async (req, res) => {
         const privateId = req.params.privateId
         try {
-            await handler.accept(privateId)
+            await preSaleHandler.accept(privateId)
             res.send({ ok: true })
         } catch(e) {
             res.status(500).send({ error: e.toString() })
@@ -161,7 +178,7 @@ const getPrivateApp = (handler = {
     app.get('/admin/pre-sale/reject/:privateId', async (req, res) => {
         const privateId = req.params.privateId
         try {
-            await handler.reject(privateId)
+            await preSaleHandler.reject(privateId)
             res.send({ ok: true })
         } catch(e) {
             res.status(500).send({ error: e.toString() })
