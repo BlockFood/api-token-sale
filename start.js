@@ -44,7 +44,10 @@ const start = async () => {
                     emailSender(
                         emailRandomTransport(emailConfig, nodemailer),
                         template
-                    ).send
+                    ).send,
+                    isDebug ?
+                        (privateId) => `http://localhost:8080/blockfood.io/air-drop#privateId=${privateId}` :
+                        (privateId) => `https://blockfood.io/air-drop#privateId=${privateId}`
                 )
             ),
             isDebug

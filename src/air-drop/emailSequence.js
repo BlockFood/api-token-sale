@@ -1,9 +1,9 @@
 const escape = require('escape-html')
 
-module.exports = (send) => {
+module.exports = (send, getAirDropPortalUrl = (a) => `${a}`) => {
 
     return {
-        sendFirstEmail: async (email, id) => {
+        sendFirstEmail: async (email, privateId) => {
             await send(email, {
                 title: 'BlockFood - Welcome to the BlockFood Air Drop Program',
                 content: `
@@ -11,7 +11,7 @@ module.exports = (send) => {
                 <div>
                 Follow this link to start with the program:
                 <ul>
-                <li><a href="https://blockfood.io/air-drop#id=${id}">https://blockfood.io/air-drop#id=${id}</a></li>
+                <li><a href="${getAirDropPortalUrl(privateId)}">${getAirDropPortalUrl(privateId)}</a></li>
 </ul>
                 </div>
                 `,
