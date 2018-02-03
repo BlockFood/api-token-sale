@@ -20,6 +20,15 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
         'sponsor'
     ]
 
+    const editableFields = [
+        'email',
+        'firstName',
+        'lastName',
+        'country',
+        'txHashes',
+        'sponsor'
+    ]
+
     const validateApplicationForUpdate = (application) =>
         mandatoryFields.reduce((isValid, field) => {
             return isValid && application[field]
@@ -62,6 +71,14 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
 
+            application = editableFields.reduce((cleanApplication, field) => {
+                if (application[field]) {
+                    cleanApplication[field] = application[field]
+                }
+                return cleanApplication
+            }, {})
+
+            // todo only keep exported fields
             application.lastUpdate = now
 
             await db.update(privateId, application)

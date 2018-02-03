@@ -4,7 +4,10 @@ module.exports = (db, idGenerator, emailSequence) => {
 
     const mandatoryFields = [
         'ethAddress',
-        'sponsor'
+        'telegram',
+        'twitter',
+        'publicReferral',
+        'publicBlockfood',
     ]
 
     const exportedFields = [
@@ -12,7 +15,10 @@ module.exports = (db, idGenerator, emailSequence) => {
         'privateId',
         'email',
         'ethAddress',
-        'sponsor'
+        'telegram',
+        'twitter',
+        'publicReferral',
+        'publicBlockfood',
     ]
 
     const validateApplicationForUpdate = (application) =>

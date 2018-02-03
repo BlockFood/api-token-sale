@@ -88,7 +88,10 @@ describe('airDropHandler', () => {
             const missingFields = getMissingFieldsForUpdate({})
             expect(missingFields).to.deep.equal([
                 'ethAddress',
-                'sponsor',
+                'telegram',
+                'twitter',
+                'publicReferral',
+                'publicBlockfood'
             ])
 
         })
@@ -96,7 +99,11 @@ describe('airDropHandler', () => {
     describe('update', () => {
         const getValidApplication = () => ({
             ethAddress: '0x02949300294930029493002949304930',
-            sponsor: 'existing_sponsor'
+            sponsor: 'existing_sponsor',
+            telegram : 'some_value',
+            twitter : 'some_value',
+            publicReferral : 'some_value',
+            publicBlockfood : 'some_value',
         })
 
         it('should update the application', async () => {
@@ -130,7 +137,7 @@ describe('airDropHandler', () => {
             await expectFailure(
                 update(expectedPrivateId, invalidApplication),
                 'update did not fail as expected',
-                'Error: missing fields: sponsor'
+                'Error: missing fields: telegram, twitter, publicReferral, publicBlockfood'
             )
         })
         it('should work if invalid application with validate=false', async () => {
@@ -150,11 +157,13 @@ describe('airDropHandler', () => {
                 privateId: expectedPrivateId,
                 publicId: expectedPublicId,
                 email: 'foo@bar',
-                firstName: 'foo',
-                lastName: 'foo',
-                country: 'foo',
                 ethAddress: '0x42',
                 sponsor: 'sponsor_id',
+                telegram : 'some_value',
+                twitter : 'some_value',
+                publicReferral : 'some_value',
+                publicBlockfood : 'some_value',
+
                 createdAt: new Date()
             })
 
@@ -167,7 +176,10 @@ describe('airDropHandler', () => {
                 publicId: expectedPublicId,
                 email: 'foo@bar',
                 ethAddress: '0x42',
-                sponsor: 'sponsor_id',
+                telegram : 'some_value',
+                twitter : 'some_value',
+                publicReferral : 'some_value',
+                publicBlockfood : 'some_value',
             })
         })
         it('should throw if application not found', async () => {

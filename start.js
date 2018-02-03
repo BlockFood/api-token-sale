@@ -46,8 +46,8 @@ const start = async () => {
                         template
                     ).send,
                     isDebug ?
-                        (privateId) => `http://localhost:8080/blockfood.io/air-drop#privateId=${privateId}` :
-                        (privateId) => `https://blockfood.io/air-drop#privateId=${privateId}`
+                        (privateId) => `http://localhost:8080/blockfood.io/airdrop#privateId=${privateId}` :
+                        (privateId) => `https://blockfood.io/airdrop#privateId=${privateId}`
                 )
             ),
             isDebug

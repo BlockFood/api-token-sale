@@ -103,6 +103,7 @@ describe('handler', () => {
                 firstName: 'foo',
                 lastName: 'foo',
                 country: 'foo',
+                publicId: 'field'
             })
 
             it('should update the application', async () => {
@@ -114,6 +115,7 @@ describe('handler', () => {
                 const expectedApplication = Object.assign({
                     lastUpdate: now
                 }, validApplication)
+                delete expectedApplication.publicId
 
                 const {update} = getPublicHandler(db, getIdGenerator(), getEmailSender())
 
