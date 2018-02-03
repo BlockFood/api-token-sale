@@ -179,6 +179,11 @@ const getPrivateApp = (preSaleHandler = {
     sendReminder: async () => {},
     accept: async () => {},
     reject: async () => {},
+}, airDropHandler = {
+    add: async () => {},
+    update: async () => {},
+    get: async () => {},
+    getReferrents: async () => {}
 }, debug = false) => {
     const app = express()
 
@@ -222,6 +227,16 @@ const getPrivateApp = (preSaleHandler = {
         const privateId = req.params.privateId
         try {
             await preSaleHandler.reject(privateId)
+            res.send({ ok: true })
+        } catch(e) {
+            res.status(500).send({ error: e.toString() })
+        }
+    })
+
+    app.get('/admin/air-drop/genesis/:email', async (req, res) => {
+        const email = req.params.email
+        try {
+            await airDropHandler.add(email, undefined, true)
             res.send({ ok: true })
         } catch(e) {
             res.status(500).send({ error: e.toString() })

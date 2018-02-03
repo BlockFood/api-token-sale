@@ -4,9 +4,12 @@ const path = require('path')
 const nodemailer = require('nodemailer')
 
 const api = require('./src/api')
-const handler = require('./src/pre-sale/handler')
+const preSaleHandler = require('./src/pre-sale/handler')
+const airDropHandler = require('./src/air-drop/handler')
 const db = require('./src/db')
-const emailSequence = require('./src/pre-sale/emailSequence')
+const idGenerator = require('./src/idGenerator')
+const preSaleEmailSequence = require('./src/pre-sale/emailSequence')
+const airDropEmailSequence = require('./src/air-drop/emailSequence')
 const emailSender = require('./src/emailSender')
 const emailRandomTransport = require('./src/emailRandomTransport')
 
@@ -19,9 +22,9 @@ const isDebug = process.argv[2] === '--debug'
 const start = async() => {
     api.start(
         api.getPrivateApp(
-            handler.getPrivateHandler(
+            preSaleHandler.getPrivateHandler(
                 await db('mongodb://127.0.0.1:27017/token-sale'),
-                emailSequence(
+                preSaleEmailSequence(
                     emailSender(
                         emailRandomTransport(emailConfig, nodemailer),
                         template
@@ -29,6 +32,19 @@ const start = async() => {
                     isDebug ?
                         (privateId) => `http://localhost:8080/blockfood.io/pre-sale#privateId=${privateId}` :
                         (privateId) => `https://blockfood.io/pre-sale#privateId=${privateId}`
+                )
+            ),
+            airDropHandler(
+                await db('mongodb://127.0.0.1:27017/air-drop'),
+                idGenerator,
+                airDropEmailSequence(
+                    emailSender(
+                        emailRandomTransport(emailConfig, nodemailer),
+                        template
+                    ).send,
+                    isDebug ?
+                        (privateId) => `http://localhost:8080/blockfood.io/airdrop#privateId=${privateId}` :
+                        (privateId) => `https://blockfood.io/airdrop#privateId=${privateId}`
                 )
             ),
             isDebug

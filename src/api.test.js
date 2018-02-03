@@ -576,5 +576,42 @@ describe('api', () => {
                 expect(response.body.error).to.equal('Error: could not find application')
             })
         })
+
+
+
+
+        describe('GET /admin/air-drop/genesis/:email', () => {
+            it('should call handler.add', async () => {
+                const handler = {
+                    add: sinon.stub()
+                }
+                handler.add.resolves()
+
+                const app = getPrivateApp({}, handler)
+
+                await supertest(app)
+                    .get('/admin/air-drop/genesis/foo@bar')
+                    .expect(200)
+
+                assert(handler.add.calledWith('foo@bar', undefined, true))
+            })
+            it('should throw if handler throws', async () => {
+                const handler = {
+                    add: sinon.stub()
+                }
+                handler.add.rejects(new Error('could not find application'))
+
+                const app = getPrivateApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/admin/air-drop/genesis/id42')
+                    .expect(500)
+
+                expect(response.body.error).to.equal('Error: could not find application')
+            })
+        })
+
+
+
     })
 })

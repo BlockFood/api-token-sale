@@ -19,6 +19,15 @@ module.exports = (db, idGenerator, emailSequence) => {
         'twitter',
         'publicReferral',
         'publicBlockfood',
+        'sponsor'
+    ]
+
+    const editableFields = [
+        'ethAddress',
+        'telegram',
+        'twitter',
+        'publicReferral',
+        'publicBlockfood',
     ]
 
     const validateApplicationForUpdate = (application) =>
@@ -37,10 +46,19 @@ module.exports = (db, idGenerator, emailSequence) => {
     return {
         validateApplicationForUpdate,
         getMissingFieldsForUpdate,
-        add: async (email, sponsor, now = new Date()) => {
+        add: async (email, sponsor, isGenesis = false, now = new Date()) => {
             if (!emailValidator.validate(email)) {
                 throw new Error('invalid email')
             }
+
+            if (!isGenesis) {
+                const parent = await db.getWithPublicId(sponsor)
+
+                if (!parent) {
+                    throw new Error('invalid sponsor')
+                }
+            }
+
             const privateId = idGenerator.generatePrivateId()
             const publicId = idGenerator.generatePublicId()
 
@@ -58,6 +76,13 @@ module.exports = (db, idGenerator, emailSequence) => {
             if (validate && !validateApplicationForUpdate(application)) {
                 throw new Error(`missing fields: ${getMissingFieldsForUpdate(application).join(', ')}`)
             }
+
+            application = editableFields.reduce((cleanApplication, field) => {
+                if (application[field]) {
+                    cleanApplication[field] = application[field]
+                }
+                return cleanApplication
+            }, {})
 
             application.lastUpdate = now
 

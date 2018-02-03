@@ -40,6 +40,7 @@ describe('airDropHandler', () => {
     describe('add', () => {
         it('should generate an ID, store the recording and send an email', async () => {
             const db = getDb()
+            db.getWithPublicId.resolves({})
             db.add.resolves()
 
             const idGenerator = getIdGenerator()
@@ -53,7 +54,7 @@ describe('airDropHandler', () => {
 
             const now = new Date()
 
-            await add('foo@bar.baz', 'sponsor_id', now)
+            await add('foo@bar.baz', 'sponsor_id', false, now)
 
             const dbFirstCall = db.add.getCall(0)
             const [newApplication] = dbFirstCall.args
@@ -80,6 +81,28 @@ describe('airDropHandler', () => {
                 'Error: invalid email'
             )
         })
+        it('should throw if sponsor does not exist', async () => {
+            const db = getDb()
+
+            db.getWithPublicId.resolves(null)
+
+            const {add} = airDropHandler(db, getIdGenerator(), getEmailSender())
+
+            await expectFailure(
+                add('foo@bar.baz'),
+                'Invalid sponsor did not throw error',
+                'Error: invalid sponsor'
+            )
+        })
+        it('should not throw if no sponsor but genesis', async () => {
+            const db = getDb()
+
+            db.getWithPublicId.resolves(null)
+
+            const {add} = airDropHandler(db, getIdGenerator(), getEmailSender())
+
+            await add('foo@bar.baz', undefined, true)
+        })
     })
     describe('getMissingFieldsForUpdate', () => {
         it('should return the list of missing fields', () => {
@@ -100,10 +123,11 @@ describe('airDropHandler', () => {
         const getValidApplication = () => ({
             ethAddress: '0x02949300294930029493002949304930',
             sponsor: 'existing_sponsor',
-            telegram : 'some_value',
-            twitter : 'some_value',
-            publicReferral : 'some_value',
-            publicBlockfood : 'some_value',
+            telegram: 'some_value',
+            twitter: 'some_value',
+            publicReferral: 'some_value',
+            publicBlockfood: 'some_value',
+            publicId: '424242'
         })
 
         it('should update the application', async () => {
@@ -115,6 +139,10 @@ describe('airDropHandler', () => {
             const expectedApplication = Object.assign({
                 lastUpdate: now
             }, validApplication)
+            delete expectedApplication.publicId
+            delete expectedApplication.sponsor
+
+            console.log('??', expectedApplication)
 
             const {update} = airDropHandler(db, getIdGenerator(), getEmailSender())
 
@@ -157,12 +185,12 @@ describe('airDropHandler', () => {
                 privateId: expectedPrivateId,
                 publicId: expectedPublicId,
                 email: 'foo@bar',
-                ethAddress: '0x42',
                 sponsor: 'sponsor_id',
-                telegram : 'some_value',
-                twitter : 'some_value',
-                publicReferral : 'some_value',
-                publicBlockfood : 'some_value',
+                ethAddress: '0x42',
+                telegram: 'some_value',
+                twitter: 'some_value',
+                publicReferral: 'some_value',
+                publicBlockfood: 'some_value',
 
                 createdAt: new Date()
             })
@@ -175,11 +203,12 @@ describe('airDropHandler', () => {
                 privateId: expectedPrivateId,
                 publicId: expectedPublicId,
                 email: 'foo@bar',
+                sponsor: 'sponsor_id',
                 ethAddress: '0x42',
-                telegram : 'some_value',
-                twitter : 'some_value',
-                publicReferral : 'some_value',
-                publicBlockfood : 'some_value',
+                telegram: 'some_value',
+                twitter: 'some_value',
+                publicReferral: 'some_value',
+                publicBlockfood: 'some_value',
             })
         })
         it('should throw if application not found', async () => {

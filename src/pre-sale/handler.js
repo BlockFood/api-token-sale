@@ -21,7 +21,6 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
     ]
 
     const editableFields = [
-        'email',
         'firstName',
         'lastName',
         'country',
@@ -78,7 +77,6 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
                 return cleanApplication
             }, {})
 
-            // todo only keep exported fields
             application.lastUpdate = now
 
             await db.update(privateId, application)
