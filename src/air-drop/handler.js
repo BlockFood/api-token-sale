@@ -67,6 +67,7 @@ module.exports = (db, idGenerator, emailSequence) => {
                 privateId,
                 publicId,
                 sponsor,
+                isAirDrop: true,
                 creation: now
             })
 
