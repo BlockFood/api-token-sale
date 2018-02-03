@@ -6,8 +6,8 @@ module.exports = (db, idGenerator, emailSequence) => {
         'ethAddress',
         'telegram',
         'twitter',
-        'publicReferral',
-        'publicBlockfood',
+        //'publicReferral',
+        //'publicBlockfood',
     ]
 
     const exportedFields = [

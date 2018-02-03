@@ -5,9 +5,9 @@ module.exports = (send, getAirDropPortalUrl = (a) => `${a}`) => {
     return {
         sendFirstEmail: async (email, privateId) => {
             await send(email, {
-                title: 'BlockFood - Welcome to the BlockFood Air Drop Program',
+                title: 'BlockFood - Welcome to the BlockFood Airdrop Program',
                 content: `
-                <h2>Welcome to the BlockFood Air Drop Program</h2>
+                <h2>Welcome to the BlockFood Airdrop Program</h2>
                 <div>
                 Follow this link to start with the program:
                 <ul>

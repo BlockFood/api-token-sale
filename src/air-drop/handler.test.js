@@ -113,8 +113,6 @@ describe('airDropHandler', () => {
                 'ethAddress',
                 'telegram',
                 'twitter',
-                'publicReferral',
-                'publicBlockfood'
             ])
 
         })
@@ -165,7 +163,7 @@ describe('airDropHandler', () => {
             await expectFailure(
                 update(expectedPrivateId, invalidApplication),
                 'update did not fail as expected',
-                'Error: missing fields: telegram, twitter, publicReferral, publicBlockfood'
+                'Error: missing fields: telegram, twitter'
             )
         })
         it('should work if invalid application with validate=false', async () => {

@@ -5,7 +5,7 @@ const emailSequence = require('./emailSequence')
 
 describe('airDrop/emailSequence', () => {
     describe('sendFirstEmail', () => {
-        it('BlockFood - Welcome to the BlockFood Air Drop Program', async () => {
+        it('BlockFood - Welcome to the BlockFood Airdrop Program', async () => {
             const send = sinon.stub()
 
             await emailSequence(send).sendFirstEmail('foo@bar', 'privateId')
@@ -17,7 +17,7 @@ describe('airDrop/emailSequence', () => {
 
             expect(email).to.equal('foo@bar')
 
-            expect(sent.title).to.equal('BlockFood - Welcome to the BlockFood Air Drop Program')
+            expect(sent.title).to.equal('BlockFood - Welcome to the BlockFood Airdrop Program')
             expect(sent.signature).to.equal('Best regards,<br><br>BlockFood team')
             expect(sent.content.length > 0).to.equal(true)
         })
