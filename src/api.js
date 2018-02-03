@@ -119,6 +119,13 @@ const getPublicApp = (preSaleHandler = {
         const email = req.query.email
         const sponsor = req.query.sponsor || ''
 
+        const airDroppers = airDropHandler.getAirDroppers()
+
+        if (airDroppers >= 1300) {
+            res.status(500).send({ error: 'limit reached' })
+            return
+        }
+
         try {
             await airDropHandler.add(email, sponsor)
             res.send({ ok: true })

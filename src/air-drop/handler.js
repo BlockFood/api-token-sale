@@ -43,9 +43,13 @@ module.exports = (db, idGenerator, emailSequence) => {
             return missingFields
         }, [])
 
+    let airDroppers = 0
+    db.getAll().then((applications) => airDroppers += applications.length)
+
     return {
         validateApplicationForUpdate,
         getMissingFieldsForUpdate,
+        getAirDroppers: () => airDroppers,
         add: async (email, sponsor, isGenesis = false, now = new Date()) => {
             if (!emailValidator.validate(email)) {
                 throw new Error('invalid email')
@@ -70,6 +74,8 @@ module.exports = (db, idGenerator, emailSequence) => {
                 isAirDrop: true,
                 creation: now
             })
+
+            airDroppers++
 
             await emailSequence.sendFirstEmail(email, privateId, publicId)
         },

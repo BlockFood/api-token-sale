@@ -21,13 +21,19 @@ describe('airDropHandler', () => {
     const expectedPrivateId = 'privateId'
     const expectedPublicId = 'publicId'
 
-    const getDb = () => ({
-        add: sinon.stub(),
-        update: sinon.stub(),
-        get: sinon.stub(),
-        getWithPublicId: sinon.stub(),
-        getAll: sinon.stub(),
-    })
+    const getDb = () => {
+        const getAll = sinon.stub()
+        getAll.resolves([])
+
+        return {
+            add: sinon.stub(),
+            update: sinon.stub(),
+            get: sinon.stub(),
+            getWithPublicId: sinon.stub(),
+            getAll,
+            getAirDroppers: async () => 0,
+        }
+    }
 
     const getIdGenerator = () => ({
         generatePrivateId: sinon.stub(),
@@ -62,6 +68,7 @@ describe('airDropHandler', () => {
                 email: 'foo@bar.baz',
                 privateId: expectedPrivateId,
                 publicId: expectedPublicId,
+                isAirDrop: true,
                 sponsor: 'sponsor_id',
                 creation: now
             })
@@ -106,7 +113,7 @@ describe('airDropHandler', () => {
     })
     describe('getMissingFieldsForUpdate', () => {
         it('should return the list of missing fields', () => {
-            const {getMissingFieldsForUpdate} = airDropHandler()
+            const {getMissingFieldsForUpdate} = airDropHandler(getDb())
 
             const missingFields = getMissingFieldsForUpdate({})
             expect(missingFields).to.deep.equal([

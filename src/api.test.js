@@ -311,7 +311,8 @@ describe('api', () => {
         describe('GET /air-drop/new', () => {
             it('should call handlers.add', async () => {
                 const handler = {
-                    add: sinon.stub()
+                    add: sinon.stub(),
+                    getAirDroppers: () => 0
                 }
                 const app = getPublicApp(undefined, handler)
 
@@ -323,7 +324,8 @@ describe('api', () => {
             })
             it('should throw if handler throws', async () => {
                 const handler = {
-                    add: sinon.stub()
+                    add: sinon.stub(),
+                    getAirDroppers: () => 0
                 }
                 handler.add.rejects(new Error('Invalid application, missing fields : a,b,c'))
                 const app = getPublicApp({}, handler)
