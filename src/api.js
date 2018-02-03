@@ -121,6 +121,8 @@ const getPublicApp = (preSaleHandler = {
 
         const airDroppers = airDropHandler.getAirDroppers()
 
+
+        console.log('?', airDroppers)
         if (airDroppers >= 1100) {
             res.status(500).send({ error: 'limit reached' })
             return
