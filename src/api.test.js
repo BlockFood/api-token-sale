@@ -612,6 +612,23 @@ describe('api', () => {
         })
 
 
+        describe('GET /admin/air-drop/review', () => {
+            it('should return whatever handlers.getAll returns', async () => {
+                const handler = {
+                    getAll: sinon.stub()
+                }
+                const whatever = { whatevs: true }
+                handler.getAll.resolves(whatever)
+
+                const app = getPrivateApp({}, handler)
+
+                const response = await supertest(app)
+                    .get('/admin/air-drop/review')
+                    .expect(200)
+
+                expect(response.body).to.deep.equal(whatever)
+            })
+        })
 
     })
 })

@@ -108,7 +108,8 @@ module.exports = (db, idGenerator, emailSequence) => {
             })
 
             return applications.find(application => application.publicId === publicId)
-        }
+        },
+        getAll: async () => db.getAll(),
     }
 }
 

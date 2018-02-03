@@ -181,6 +181,7 @@ const getPrivateApp = (preSaleHandler = {
     reject: async () => {},
 }, airDropHandler = {
     add: async () => {},
+    getAll: async () => {},
     update: async () => {},
     get: async () => {},
     getReferrents: async () => {}
@@ -241,6 +242,11 @@ const getPrivateApp = (preSaleHandler = {
         } catch(e) {
             res.status(500).send({ error: e.toString() })
         }
+    })
+
+    app.get('/admin/air-drop/review', async (req, res) => {
+        const applications = await airDropHandler.getAll()
+        res.send(applications)
     })
 
     return app
