@@ -66,6 +66,8 @@ module.exports = (db, idGenerator, emailSequence) => {
             const privateId = idGenerator.generatePrivateId()
             const publicId = idGenerator.generatePublicId()
 
+            await emailSequence.sendFirstEmail(email, privateId, publicId)
+
             await db.add({
                 email,
                 privateId,
@@ -77,7 +79,6 @@ module.exports = (db, idGenerator, emailSequence) => {
 
             airDroppers++
 
-            await emailSequence.sendFirstEmail(email, privateId, publicId)
         },
         update: async (privateId, application, validate = true, now = new Date()) => {
             if (validate && !validateApplicationForUpdate(application)) {
