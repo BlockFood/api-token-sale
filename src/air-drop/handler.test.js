@@ -237,19 +237,24 @@ describe('airDropHandler', () => {
             db.getAll.resolves([
 
                 {
-                    publicId: 'A'
+                    publicId: 'A',
+                    privateId: 'privateId',
+                    ethAddress: '0x',
                 },
                 {
                     publicId: 'B',
-                    sponsor: 'A'
+                    sponsor: 'A',
+                    ethAddress: '0x',
                 },
                 {
                     publicId: 'C',
-                    sponsor: 'A'
+                    sponsor: 'A',
+                    ethAddress: '0x',
                 },
                 {
                     publicId: 'D',
-                    sponsor: 'B'
+                    sponsor: 'B',
+                    ethAddress: '0x',
                 }
             ])
 
@@ -260,14 +265,18 @@ describe('airDropHandler', () => {
             expect(referrents).to.deep.equal(
                 {
                     publicId: 'A',
+                    ethAddress: '0x',
+                    sponsor: undefined,
                     referrents: [
                         {
                             publicId: 'B',
                             sponsor: 'A',
+                            ethAddress: '0x',
                             referrents: [
                                 {
                                     publicId: 'D',
                                     sponsor: 'B',
+                                    ethAddress: '0x',
                                     referrents: []
                                 }
                             ]
@@ -275,6 +284,7 @@ describe('airDropHandler', () => {
                         {
                             publicId: 'C',
                             sponsor: 'A',
+                            ethAddress: '0x',
                             referrents: []
                         }
                     ]
@@ -283,7 +293,10 @@ describe('airDropHandler', () => {
         })
         it('should return an empty array if no applications match', async () => {
             const db = getDb()
-            db.getAll.resolves([{publicId: 'A'}])
+            db.getAll.resolves([{
+                publicId: 'A', privateId: 'lol',
+                ethAddress: '0x'
+            }])
 
             const {getReferrents} = airDropHandler(db, getIdGenerator(), getEmailSender())
 
@@ -291,6 +304,8 @@ describe('airDropHandler', () => {
 
             expect(referrents).to.deep.equal({
                 publicId: 'A',
+                ethAddress: '0x',
+                sponsor: undefined,
                 referrents: []
             })
         })

@@ -109,7 +109,13 @@ module.exports = (db, idGenerator, emailSequence) => {
             }, {})
         },
         getReferrents: async (publicId) => {
-            const applications = await db.getAll()
+            let applications = await db.getAll()
+
+            applications = applications.map(application => ({
+                ethAddress: application.ethAddress,
+                sponsor: application.sponsor,
+                publicId: application.publicId
+            }))
 
             applications.forEach(application => {
                 application.referrents = applications.filter(app => app.sponsor === application.publicId)
