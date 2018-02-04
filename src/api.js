@@ -3,15 +3,23 @@ const multiparty = require('multiparty')
 const emailValidator = require('email-validator')
 
 const getPublicApp = (preSaleHandler = {
-    add: async () => {},
-    update: async () => {},
-    get: async () => {},
-    getReferrents: async () => {},
+    add: async () => {
+    },
+    update: async () => {
+    },
+    get: async () => {
+    },
+    getReferrents: async () => {
+    },
 }, airDropHandler = {
-    add: async () => {},
-    update: async () => {},
-    get: async () => {},
-    getReferrents: async () => {}
+    add: async () => {
+    },
+    update: async () => {
+    },
+    get: async () => {
+    },
+    getReferrents: async () => {
+    }
 }, debug = false) => {
     const app = express()
 
@@ -27,16 +35,16 @@ const getPublicApp = (preSaleHandler = {
 
         try {
             await preSaleHandler.add(email, sponsor)
-            res.send({ ok: true })
+            res.send({ok: true})
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
     app.post('/pre-sale/edit/:privateId', async (req, res) => {
         const privateId = req.params.privateId
 
-        const form = new multiparty.Form({ autoFiles: true })
+        const form = new multiparty.Form({autoFiles: true})
 
         form.parse(req, async (err, fields) => {
             if (err) {
@@ -51,9 +59,9 @@ const getPublicApp = (preSaleHandler = {
                     return application
                 }, {})
                 await preSaleHandler.update(privateId, application)
-                res.send({ ok: true })
+                res.send({ok: true})
             } catch (e) {
-                res.status(500).send({ error: e.toString() })
+                res.status(500).send({error: e.toString()})
             }
         })
     })
@@ -63,9 +71,9 @@ const getPublicApp = (preSaleHandler = {
 
         try {
             await preSaleHandler.lock(privateId)
-            res.send({ ok: true })
+            res.send({ok: true})
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -74,7 +82,7 @@ const getPublicApp = (preSaleHandler = {
         const txHash = req.params.txHash
 
         if (!/0x[0-9A-Fa-f]+/.test(txHash) || txHash.length !== 66) {
-            res.status(500).send({ error: (new Error('invalid transaction hash')).toString() })
+            res.status(500).send({error: (new Error('invalid transaction hash')).toString()})
             return
         }
 
@@ -82,10 +90,10 @@ const getPublicApp = (preSaleHandler = {
             const application = await preSaleHandler.get(privateId)
             const txHashes = application.txHashes || []
             txHashes.push(txHash)
-            await preSaleHandler.update(privateId, { txHashes }, false)
-            res.send({ ok: true })
+            await preSaleHandler.update(privateId, {txHashes}, false)
+            res.send({ok: true})
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -94,16 +102,16 @@ const getPublicApp = (preSaleHandler = {
             const application = await preSaleHandler.get(req.params.privateId)
             res.send(application)
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
     app.get('/pre-sale/smart-contract', async (req, res) => {
         if (debug) {
-            res.send({ address: '0x45B213dac7E8BD71Ffe8E09A7471dF8728155342' })
+            res.send({address: '0x45B213dac7E8BD71Ffe8E09A7471dF8728155342'})
             return
         }
-        res.send({ address: '0x762C128A5BAC6553e66fb2c07bEE864576966C26' })
+        res.send({address: '0x762C128A5BAC6553e66fb2c07bEE864576966C26'})
     })
 
     app.get('/pre-sale/referrents/:publicId', async (req, res) => {
@@ -111,7 +119,7 @@ const getPublicApp = (preSaleHandler = {
             const application = await preSaleHandler.getReferrents(req.params.publicId)
             res.send(application)
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -124,22 +132,22 @@ const getPublicApp = (preSaleHandler = {
 
         console.log('?', airDroppers)
         if (airDroppers >= 1100) {
-            res.status(500).send({ error: 'limit reached' })
+            res.status(500).send({error: 'limit reached'})
             return
         }
 
         try {
-            await airDropHandler.add(email, sponsor)
-            res.send({ ok: true })
+            await airDropHandler.add(email, sponsor, req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+            res.send({ok: true})
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
     app.post('/air-drop/edit/:privateId', async (req, res) => {
         const privateId = req.params.privateId
 
-        const form = new multiparty.Form({ autoFiles: true })
+        const form = new multiparty.Form({autoFiles: true})
 
         form.parse(req, async (err, fields) => {
             if (err) {
@@ -154,9 +162,9 @@ const getPublicApp = (preSaleHandler = {
                     return application
                 }, {})
                 await airDropHandler.update(privateId, application)
-                res.send({ ok: true })
+                res.send({ok: true})
             } catch (e) {
-                res.status(500).send({ error: e.toString() })
+                res.status(500).send({error: e.toString()})
             }
         })
     })
@@ -166,7 +174,7 @@ const getPublicApp = (preSaleHandler = {
             const application = await airDropHandler.get(req.params.privateId)
             res.send(application)
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -175,7 +183,7 @@ const getPublicApp = (preSaleHandler = {
             const application = await airDropHandler.getReferrents(req.params.publicId)
             res.send(application)
         } catch (e) {
-            res.status(500).send({ error: e.toString() })
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -183,17 +191,27 @@ const getPublicApp = (preSaleHandler = {
 }
 
 const getPrivateApp = (preSaleHandler = {
-    get: async () => {},
-    getAll: async () => {},
-    sendReminder: async () => {},
-    accept: async () => {},
-    reject: async () => {},
+    get: async () => {
+    },
+    getAll: async () => {
+    },
+    sendReminder: async () => {
+    },
+    accept: async () => {
+    },
+    reject: async () => {
+    },
 }, airDropHandler = {
-    add: async () => {},
-    getAll: async () => {},
-    update: async () => {},
-    get: async () => {},
-    getReferrents: async () => {}
+    add: async () => {
+    },
+    getAll: async () => {
+    },
+    update: async () => {
+    },
+    get: async () => {
+    },
+    getReferrents: async () => {
+    }
 }, debug = false) => {
     const app = express()
 
@@ -217,9 +235,9 @@ const getPrivateApp = (preSaleHandler = {
         const privateId = req.params.privateId
         try {
             await preSaleHandler.sendReminder(privateId)
-            res.send({ ok: true })
-        } catch(e) {
-            res.status(500).send({ error: e.toString() })
+            res.send({ok: true})
+        } catch (e) {
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -227,9 +245,9 @@ const getPrivateApp = (preSaleHandler = {
         const privateId = req.params.privateId
         try {
             await preSaleHandler.accept(privateId)
-            res.send({ ok: true })
-        } catch(e) {
-            res.status(500).send({ error: e.toString() })
+            res.send({ok: true})
+        } catch (e) {
+            res.status(500).send({error: e.toString()})
         }
     })
 
@@ -237,19 +255,19 @@ const getPrivateApp = (preSaleHandler = {
         const privateId = req.params.privateId
         try {
             await preSaleHandler.reject(privateId)
-            res.send({ ok: true })
-        } catch(e) {
-            res.status(500).send({ error: e.toString() })
+            res.send({ok: true})
+        } catch (e) {
+            res.status(500).send({error: e.toString()})
         }
     })
 
     app.get('/admin/air-drop/genesis/:email', async (req, res) => {
         const email = req.params.email
         try {
-            await airDropHandler.add(email, undefined, true)
-            res.send({ ok: true })
-        } catch(e) {
-            res.status(500).send({ error: e.toString() })
+            await airDropHandler.add(email, undefined, undefined, true)
+            res.send({ok: true})
+        } catch (e) {
+            res.status(500).send({error: e.toString()})
         }
     })
 

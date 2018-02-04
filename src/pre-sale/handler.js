@@ -108,9 +108,13 @@ const getPublicHandler = (db, idGenerator, emailSequence, storage) => {
             await db.update(privateId, lockedApplication)
         },
         getReferrents: async (publicId) => {
-            const applications = await db.getAll()
+            let applications = await db.getAll()
 
-            return applications.filter(application => application.sponsor === publicId)
+            applications = applications.filter(application => application.sponsor === publicId)
+
+            return applications.map(application => ({
+                publicId: application.publicId
+            }))
         }
     }
 }

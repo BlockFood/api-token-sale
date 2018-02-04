@@ -50,7 +50,7 @@ module.exports = (db, idGenerator, emailSequence) => {
         validateApplicationForUpdate,
         getMissingFieldsForUpdate,
         getAirDroppers: () => airDroppers,
-        add: async (email, sponsor, isGenesis = false, now = new Date()) => {
+        add: async (email, sponsor, ip, isGenesis = false, now = new Date()) => {
             if (!emailValidator.validate(email)) {
                 throw new Error('invalid email')
             }
@@ -73,6 +73,7 @@ module.exports = (db, idGenerator, emailSequence) => {
                 privateId,
                 publicId,
                 sponsor,
+                ip,
                 isAirDrop: true,
                 creation: now
             })
